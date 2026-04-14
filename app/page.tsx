@@ -1,23 +1,33 @@
 export const dynamic = 'force-dynamic'
 
-import { supabase, type AgentSession, type AgentLog, type CostRecord, type Project } from '@/lib/supabase'
+import { type AgentSession, type AgentLog, type CostRecord, type Project } from '@/lib/supabase'
 import { LiveStats } from '@/components/realtime/live-stats'
 import { LiveAgents } from '@/components/realtime/live-agents'
 import { LiveFeed } from '@/components/realtime/live-feed'
 import { ArrowUpRight } from 'lucide-react'
 
+const SB_URL = 'https://logkkueavewqmaquuwfw.supabase.co'
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxvZ2trdWVhdmV3cW1hcXV1d2Z3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NjQ1NzksImV4cCI6MjA5MTA0MDU3OX0.3H-HBY7RTIfp72mEUbV-hztaLn58V4z1M3ot-rl_mms'
+const SB_HEADERS = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` }
+
+async function sbFetch(path: string) {
+  const res = await fetch(`${SB_URL}/rest/v1/${path}`, { headers: SB_HEADERS, cache: 'no-store' })
+  if (!res.ok) return []
+  return res.json()
+}
+
 async function getDashboardData() {
   const [sessions, logs, costs, projects] = await Promise.all([
-    supabase.from('agent_sessions').select('*').order('last_seen_at', { ascending: false }),
-    supabase.from('agent_logs').select('*').order('created_at', { ascending: false }).limit(20),
-    supabase.from('cost_tracking').select('*'),
-    supabase.from('projects').select('*').eq('status', 'active'),
+    sbFetch('agent_sessions?select=*&order=last_seen_at.desc'),
+    sbFetch('agent_logs?select=*&order=created_at.desc&limit=20'),
+    sbFetch('cost_tracking?select=*'),
+    sbFetch('projects?select=*&status=eq.active'),
   ])
   return {
-    sessions: sessions.data ?? [],
-    logs: logs.data ?? [],
-    costs: costs.data ?? [],
-    projects: projects.data ?? [],
+    sessions: (sessions as AgentSession[]) ?? [],
+    logs: (logs as AgentLog[]) ?? [],
+    costs: (costs as CostRecord[]) ?? [],
+    projects: (projects as Project[]) ?? [],
   }
 }
 

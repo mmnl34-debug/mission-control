@@ -1,18 +1,25 @@
 export const dynamic = 'force-dynamic'
 
-import { supabase } from '@/lib/supabase'
 import { Bot, Clock, Cpu, AlertCircle, CheckCircle, Pause } from 'lucide-react'
 import { formatDistanceToNow, format } from 'date-fns'
 import { nl } from 'date-fns/locale'
 
-export const revalidate = 15
+const SB_URL = 'https://logkkueavewqmaquuwfw.supabase.co'
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxvZ2trdWVhdmV3cW1hcXV1d2Z3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NjQ1NzksImV4cCI6MjA5MTA0MDU3OX0.3H-HBY7RTIfp72mEUbV-hztaLn58V4z1M3ot-rl_mms'
+const SB_HEADERS = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` }
+
+async function sbFetch(path: string) {
+  const res = await fetch(`${SB_URL}/rest/v1/${path}`, { headers: SB_HEADERS, cache: 'no-store' })
+  if (!res.ok) return []
+  return res.json()
+}
 
 async function getData() {
   const [sessions, logs] = await Promise.all([
-    supabase.from('agent_sessions').select('*').order('last_seen_at', { ascending: false }),
-    supabase.from('agent_logs').select('*').order('created_at', { ascending: false }).limit(50),
+    sbFetch('agent_sessions?select=*&order=last_seen_at.desc'),
+    sbFetch('agent_logs?select=*&order=created_at.desc&limit=50'),
   ])
-  return { sessions: sessions.data ?? [], logs: logs.data ?? [] }
+  return { sessions: sessions ?? [], logs: logs ?? [] }
 }
 
 const statusConfig = {

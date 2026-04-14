@@ -1,15 +1,17 @@
 export const dynamic = 'force-dynamic'
 
-import { supabase } from '@/lib/supabase'
 import { FolderKanban, Circle, CheckCircle2, PauseCircle, Archive } from 'lucide-react'
 import { format } from 'date-fns'
 import { nl } from 'date-fns/locale'
 
-export const revalidate = 60
+const SB_URL = 'https://logkkueavewqmaquuwfw.supabase.co'
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxvZ2trdWVhdmV3cW1hcXV1d2Z3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NjQ1NzksImV4cCI6MjA5MTA0MDU3OX0.3H-HBY7RTIfp72mEUbV-hztaLn58V4z1M3ot-rl_mms'
+const SB_HEADERS = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` }
 
 async function getData() {
-  const { data } = await supabase.from('projects').select('*').order('updated_at', { ascending: false })
-  return data ?? []
+  const res = await fetch(`${SB_URL}/rest/v1/projects?select=*&order=updated_at.desc`, { headers: SB_HEADERS, cache: 'no-store' })
+  if (!res.ok) return []
+  return res.json()
 }
 
 const statusConfig = {
