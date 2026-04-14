@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { supabase } from '@/lib/supabase'
 import { DollarSign, Cpu, TrendingUp, Zap } from 'lucide-react'
 import { format } from 'date-fns'

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { supabase } from '@/lib/supabase'
 import { Bot, Clock, Cpu, AlertCircle, CheckCircle, Pause } from 'lucide-react'
 import { formatDistanceToNow, format } from 'date-fns'

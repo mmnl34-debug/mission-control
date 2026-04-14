@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { supabase } from '@/lib/supabase'
 import { FolderKanban, Circle, CheckCircle2, PauseCircle, Archive } from 'lucide-react'
 import { format } from 'date-fns'

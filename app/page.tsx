@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { supabase, type AgentSession, type AgentLog, type CostRecord, type Project } from '@/lib/supabase'
 import { LiveStats } from '@/components/realtime/live-stats'
 import { LiveAgents } from '@/components/realtime/live-agents'
