@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { LayoutDashboard, Bot, FolderKanban, DollarSign, Activity, Zap } from 'lucide-react'
 
 const nav = [
@@ -11,23 +12,72 @@ const nav = [
   { href: '/costs', label: 'Kosten', icon: DollarSign },
 ]
 
+function LiveClock() {
+  const [time, setTime] = useState<string>('')
+
+  useEffect(() => {
+    function tick() {
+      const now = new Date()
+      setTime(now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }))
+    }
+    tick()
+    const id = setInterval(tick, 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  return (
+    <span className="font-terminal text-xs tabular-nums" style={{ color: '#6366f1' }}>
+      {time || '--:--:--'}
+    </span>
+  )
+}
+
 export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="w-56 shrink-0 flex flex-col" style={{ background: '#13131c', borderRight: '1px solid #2a2a3d' }}>
+    <aside
+      className="w-60 shrink-0 flex flex-col relative overflow-hidden"
+      style={{
+        background: 'rgba(4,4,10,0.8)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderRight: '1px solid rgba(255,255,255,0.06)',
+      }}
+    >
+      {/* Scan line overlay */}
+      <div
+        className="scan-line absolute left-0 right-0 pointer-events-none z-10"
+        style={{
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.4), rgba(6,182,212,0.3), transparent)',
+          top: 0,
+        }}
+      />
+
       {/* Logo */}
-      <div className="px-4 py-5 flex items-center gap-2" style={{ borderBottom: '1px solid #2a2a3d' }}>
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: '#6366f1' }}>
+      <div
+        className="px-4 py-5 flex items-center gap-3 relative"
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+      >
+        <div
+          className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+          style={{
+            background: 'linear-gradient(135deg, #6366f1, #818cf8)',
+            boxShadow: '0 0 16px rgba(99,102,241,0.5)',
+          }}
+        >
           <Zap size={14} color="white" />
         </div>
         <div>
-          <div className="text-sm font-semibold text-white leading-none">Mission</div>
-          <div className="text-xs leading-none mt-0.5" style={{ color: '#6366f1' }}>Control</div>
+          <div className="text-sm font-bold text-white tracking-widest leading-none uppercase">Mission</div>
+          <div className="text-xs leading-none mt-0.5 tracking-widest uppercase font-terminal" style={{ color: '#6366f1' }}>
+            Control
+          </div>
         </div>
-        <div className="ml-auto flex items-center gap-1">
+        <div className="ml-auto flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-green-400 pulse-dot" />
-          <span className="text-xs" style={{ color: '#94a3b8' }}>live</span>
+          <span className="text-xs font-terminal" style={{ color: '#64748b' }}>live</span>
         </div>
       </div>
 
@@ -39,25 +89,47 @@ export function Sidebar() {
             <Link
               key={href}
               href={href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all relative"
               style={{
-                background: active ? 'rgba(99,102,241,0.15)' : 'transparent',
-                color: active ? '#818cf8' : '#94a3b8',
-                border: active ? '1px solid rgba(99,102,241,0.2)' : '1px solid transparent',
+                background: active ? 'rgba(99,102,241,0.1)' : 'transparent',
+                color: active ? '#818cf8' : '#64748b',
+                borderLeft: active ? '2px solid #6366f1' : '2px solid transparent',
+                boxShadow: active ? '0 0 12px rgba(99,102,241,0.1)' : 'none',
+                paddingLeft: active ? '10px' : '12px',
               }}
             >
               <Icon size={15} />
               {label}
+              {active && (
+                <span
+                  className="ml-auto w-1 h-1 rounded-full"
+                  style={{ background: '#6366f1', boxShadow: '0 0 6px #6366f1' }}
+                />
+              )}
             </Link>
           )
         })}
       </nav>
 
-      {/* Bottom */}
-      <div className="px-4 py-4" style={{ borderTop: '1px solid #2a2a3d' }}>
+      {/* System Status */}
+      <div className="px-3 py-3 mx-2 mb-2 rounded-lg" style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)' }}>
+        <div className="text-xs tracking-widest uppercase mb-2 font-terminal" style={{ color: '#334155' }}>
+          System Status
+        </div>
         <div className="flex items-center gap-2">
-          <Activity size={12} style={{ color: '#6366f1' }} />
-          <span className="text-xs" style={{ color: '#475569' }}>claude-sonnet-4-6</span>
+          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: '#10b981', boxShadow: '0 0 6px #10b981' }} />
+          <span className="text-xs font-terminal" style={{ color: '#10b981' }}>All systems operational</span>
+        </div>
+      </div>
+
+      {/* Bottom */}
+      <div className="px-4 py-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Activity size={12} style={{ color: '#6366f1' }} />
+            <span className="text-xs font-terminal" style={{ color: '#334155' }}>claude-sonnet-4-6</span>
+          </div>
+          <LiveClock />
         </div>
       </div>
     </aside>
