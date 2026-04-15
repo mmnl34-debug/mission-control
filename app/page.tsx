@@ -1,9 +1,10 @@
 export const dynamic = 'force-dynamic'
 
-import { type AgentSession, type AgentLog, type CostRecord, type Project } from '@/lib/supabase'
+import { type AgentSession, type AgentLog, type CostRecord, type Project, type Task } from '@/lib/supabase'
 import { LiveStats } from '@/components/realtime/live-stats'
 import { LiveAgents } from '@/components/realtime/live-agents'
 import { LiveFeed } from '@/components/realtime/live-feed'
+import { LiveTasks } from '@/components/realtime/live-tasks'
 import { ArrowUpRight } from 'lucide-react'
 
 const SB_URL = 'https://logkkueavewqmaquuwfw.supabase.co'
@@ -17,36 +18,32 @@ async function sbFetch(path: string) {
 }
 
 async function getDashboardData() {
-  const [sessions, logs, costs, projects] = await Promise.all([
+  const [sessions, logs, costs, projects, tasks] = await Promise.all([
     sbFetch('agent_sessions?select=*&order=last_seen_at.desc'),
-    sbFetch('agent_logs?select=*&order=created_at.desc&limit=20'),
+    sbFetch('agent_logs?select=*&order=created_at.desc&limit=15'),
     sbFetch('cost_tracking?select=*'),
     sbFetch('projects?select=*&status=eq.active'),
+    sbFetch('tasks?select=*&order=priority.asc,created_at.asc'),
   ])
   return {
     sessions: (sessions as AgentSession[]) ?? [],
     logs: (logs as AgentLog[]) ?? [],
     costs: (costs as CostRecord[]) ?? [],
     projects: (projects as Project[]) ?? [],
+    tasks: (tasks as Task[]) ?? [],
   }
 }
 
 export default async function DashboardPage() {
-  const { sessions, logs, costs, projects } = await getDashboardData()
+  const { sessions, logs, costs, projects, tasks } = await getDashboardData()
 
   return (
     <div className="relative min-h-full">
       {/* Ambient background orbs */}
-      <div
-        className="orb-purple"
-        style={{ top: '-200px', right: '-150px' }}
-      />
-      <div
-        className="orb-cyan"
-        style={{ bottom: '-150px', left: '-100px' }}
-      />
+      <div className="orb-purple" style={{ top: '-200px', right: '-150px' }} />
+      <div className="orb-cyan" style={{ bottom: '-150px', left: '-100px' }} />
 
-      <div className="relative z-10 p-6 space-y-6">
+      <div className="relative z-10 p-6 space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -64,7 +61,6 @@ export default async function DashboardPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* System online badge */}
             <div
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg font-terminal text-xs"
               style={{
@@ -79,20 +75,21 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Stats row — client component with realtime */}
+        {/* Stats row */}
         <LiveStats
           initialSessions={sessions as AgentSession[]}
           initialCosts={costs as CostRecord[]}
           initialProjects={projects as Project[]}
         />
 
-        {/* Main two-column grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4" style={{ minHeight: '400px' }}>
+        {/* Three-column grid: Agents | Feed | Tasks */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4" style={{ minHeight: '320px' }}>
           <LiveAgents initialSessions={sessions as AgentSession[]} />
           <LiveFeed initialLogs={logs as AgentLog[]} />
+          <LiveTasks initialTasks={tasks as Task[]} />
         </div>
 
-        {/* Projects section — server-rendered */}
+        {/* Projects section */}
         <div className="glass-card overflow-hidden">
           <div
             className="flex items-center justify-between px-4 py-3"
