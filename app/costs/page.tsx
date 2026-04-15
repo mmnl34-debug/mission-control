@@ -3,6 +3,8 @@ export const dynamic = 'force-dynamic'
 import { DollarSign, Cpu, TrendingUp, Zap } from 'lucide-react'
 import { format } from 'date-fns'
 import { nl } from 'date-fns/locale'
+import { CostsChart } from '@/components/costs-chart'
+import { ModelPie } from '@/components/model-pie'
 
 const SB_URL = 'https://logkkueavewqmaquuwfw.supabase.co'
 const SB_KEY = 'sb_publishable_nqPICLQDoaXGb8hshPIYYg_uv9GRuid'
@@ -14,9 +16,9 @@ async function getData() {
   return res.json()
 }
 
-const modelColor: Record<string, string> = {
+const modelColorMap: Record<string, string> = {
   'claude-opus-4-6': '#ec4899',
-  'claude-sonnet-4-6': '#6366f1',
+  'claude-sonnet-4-6': '#00d4ff',
   'claude-haiku-4-5-20251001': '#10b981',
 }
 
@@ -46,6 +48,32 @@ export default async function CostsPage() {
     byAgent[name].tokens += r.input_tokens + r.output_tokens
   }
 
+  // Daily data for bar chart (last 14 days)
+  const dailyMap: Record<string, number> = {}
+  const now = new Date()
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(now)
+    d.setDate(d.getDate() - i)
+    const key = d.toISOString().slice(0, 10)
+    dailyMap[key] = 0
+  }
+  for (const r of records as { date: string; cost_usd: number }[]) {
+    if (r.date && dailyMap[r.date] !== undefined) {
+      dailyMap[r.date] += Number(r.cost_usd)
+    }
+  }
+  const dailyData = Object.entries(dailyMap).map(([date, cost]) => ({
+    date: date.slice(5), // MM-DD
+    cost: Math.round(cost * 10000) / 10000,
+  }))
+
+  // Model data for pie chart
+  const modelData = Object.entries(byModel).map(([name, stats]) => ({
+    name,
+    cost: stats.cost,
+    color: modelColorMap[name] ?? '#94a3b8',
+  }))
+
   return (
     <div className="p-6 space-y-6">
       <div>
@@ -53,61 +81,70 @@ export default async function CostsPage() {
         <p className="text-sm mt-0.5" style={{ color: '#94a3b8' }}>{records.length} sessies geregistreerd</p>
       </div>
 
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <CostsChart dailyData={dailyData} />
+        <ModelPie modelData={modelData} totalCost={totalCost} />
+      </div>
+
       {/* Summary stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'Totale kosten', value: `$${totalCost.toFixed(4)}`, icon: DollarSign, color: '#ec4899' },
-          { label: 'Input tokens', value: `${(totalInput / 1000).toFixed(1)}K`, icon: Cpu, color: '#6366f1' },
+          { label: 'Input tokens', value: `${(totalInput / 1000).toFixed(1)}K`, icon: Cpu, color: '#00d4ff' },
           { label: 'Output tokens', value: `${(totalOutput / 1000).toFixed(1)}K`, icon: TrendingUp, color: '#10b981' },
           { label: 'Cache tokens', value: `${(totalCache / 1000).toFixed(1)}K`, icon: Zap, color: '#f59e0b' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl p-4" style={{ background: '#1a1a26', border: '1px solid #2a2a3d' }}>
+          <div key={stat.label} className="hud-card p-4">
+            <div className="hud-corners-bottom" />
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs" style={{ color: '#94a3b8' }}>{stat.label}</span>
+              <span className="text-xs font-terminal" style={{ color: '#94a3b8' }}>{stat.label}</span>
               <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${stat.color}20` }}>
                 <stat.icon size={14} style={{ color: stat.color }} />
               </div>
             </div>
-            <div className="text-2xl font-bold text-white">{stat.value}</div>
+            <div className="text-2xl font-bold font-terminal text-white">{stat.value}</div>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Per model */}
-        <div className="rounded-xl p-4" style={{ background: '#1a1a26', border: '1px solid #2a2a3d' }}>
+        <div className="hud-card p-4">
+          <div className="hud-corners-bottom" />
           <h2 className="text-sm font-medium text-white mb-4 flex items-center gap-2">
-            <Cpu size={14} style={{ color: '#6366f1' }} /> Per model
+            <Cpu size={14} style={{ color: '#00d4ff' }} /> Per model
           </h2>
           <div className="space-y-3">
             {Object.entries(byModel).sort((a, b) => b[1].cost - a[1].cost).map(([model, stats]) => {
               const pct = totalCost > 0 ? (stats.cost / totalCost) * 100 : 0
-              const color = modelColor[model] ?? '#94a3b8'
+              const color = modelColorMap[model] ?? '#94a3b8'
               return (
                 <div key={model}>
                   <div className="flex items-center justify-between text-xs mb-1.5">
-                    <span style={{ color: '#94a3b8' }}>{model}</span>
-                    <span className="font-medium text-white">${stats.cost.toFixed(4)}</span>
+                    <span className="font-terminal" style={{ color: '#94a3b8' }}>{model}</span>
+                    <span className="font-terminal font-medium text-white">${stats.cost.toFixed(4)}</span>
                   </div>
-                  <div className="w-full h-1.5 rounded-full" style={{ background: '#2a2a3d' }}>
+                  <div className="w-full h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
                     <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: color }} />
                   </div>
-                  <div className="text-xs mt-1" style={{ color: '#475569' }}>
+                  <div className="text-xs font-terminal mt-1" style={{ color: '#475569' }}>
                     {(stats.tokens / 1000).toFixed(1)}K tokens · {stats.count} sessies
                   </div>
                 </div>
               )
             })}
             {Object.keys(byModel).length === 0 && (
-              <p className="text-sm text-center py-4" style={{ color: '#475569' }}>Geen data</p>
+              <p className="text-sm font-terminal text-center py-4" style={{ color: '#475569' }}>Geen data</p>
             )}
           </div>
         </div>
 
         {/* Per agent */}
-        <div className="rounded-xl p-4" style={{ background: '#1a1a26', border: '1px solid #2a2a3d' }}>
+        <div className="hud-card p-4">
+          <div className="hud-corners-bottom" />
           <h2 className="text-sm font-medium text-white mb-4 flex items-center gap-2">
-            <TrendingUp size={14} style={{ color: '#6366f1' }} /> Per agent
+            <TrendingUp size={14} style={{ color: '#00d4ff' }} /> Per agent
           </h2>
           <div className="space-y-3">
             {Object.entries(byAgent).sort((a, b) => b[1].cost - a[1].cost).map(([agent, stats]) => {
@@ -115,34 +152,35 @@ export default async function CostsPage() {
               return (
                 <div key={agent}>
                   <div className="flex items-center justify-between text-xs mb-1.5">
-                    <span style={{ color: '#94a3b8' }}>{agent}</span>
-                    <span className="font-medium text-white">${stats.cost.toFixed(4)}</span>
+                    <span className="font-terminal" style={{ color: '#94a3b8' }}>{agent}</span>
+                    <span className="font-terminal font-medium text-white">${stats.cost.toFixed(4)}</span>
                   </div>
-                  <div className="w-full h-1.5 rounded-full" style={{ background: '#2a2a3d' }}>
-                    <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: '#6366f1' }} />
+                  <div className="w-full h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                    <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: '#00d4ff' }} />
                   </div>
-                  <div className="text-xs mt-1" style={{ color: '#475569' }}>
+                  <div className="text-xs font-terminal mt-1" style={{ color: '#475569' }}>
                     {(stats.tokens / 1000).toFixed(1)}K tokens
                   </div>
                 </div>
               )
             })}
             {Object.keys(byAgent).length === 0 && (
-              <p className="text-sm text-center py-4" style={{ color: '#475569' }}>Geen data</p>
+              <p className="text-sm font-terminal text-center py-4" style={{ color: '#475569' }}>Geen data</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Detail table */}
-      <div className="rounded-xl overflow-hidden" style={{ border: '1px solid #2a2a3d' }}>
-        <div className="px-4 py-3" style={{ background: '#1a1a26', borderBottom: '1px solid #2a2a3d' }}>
+      <div className="hud-card overflow-hidden">
+        <div className="hud-corners-bottom" />
+        <div className="px-4 py-3" style={{ borderBottom: '1px solid rgba(0,212,255,0.08)' }}>
           <h2 className="text-sm font-medium text-white">Sessiedetails</h2>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-xs">
+          <table className="w-full text-xs font-terminal">
             <thead>
-              <tr style={{ background: '#13131c', borderBottom: '1px solid #2a2a3d' }}>
+              <tr style={{ background: 'rgba(0,212,255,0.02)', borderBottom: '1px solid rgba(0,212,255,0.08)' }}>
                 {['Agent', 'Model', 'Input', 'Output', 'Cache', 'Kosten', 'Datum'].map(h => (
                   <th key={h} className="px-4 py-2.5 text-left font-medium" style={{ color: '#475569' }}>{h}</th>
                 ))}
@@ -154,9 +192,9 @@ export default async function CostsPage() {
                 input_tokens: number; output_tokens: number; cache_read_tokens: number;
                 cost_usd: number; recorded_at: string
               }, i: number) => (
-                <tr key={r.id} style={{ borderBottom: i < records.length - 1 ? '1px solid #1f1f2e' : 'none', background: '#1a1a26' }}>
+                <tr key={r.id} style={{ borderBottom: i < records.length - 1 ? '1px solid rgba(0,212,255,0.04)' : 'none' }}>
                   <td className="px-4 py-2.5 text-white">{r.agent_name ?? '—'}</td>
-                  <td className="px-4 py-2.5" style={{ color: modelColor[r.model] ?? '#94a3b8' }}>{r.model}</td>
+                  <td className="px-4 py-2.5" style={{ color: modelColorMap[r.model] ?? '#94a3b8' }}>{r.model}</td>
                   <td className="px-4 py-2.5" style={{ color: '#94a3b8' }}>{(r.input_tokens / 1000).toFixed(1)}K</td>
                   <td className="px-4 py-2.5" style={{ color: '#94a3b8' }}>{(r.output_tokens / 1000).toFixed(1)}K</td>
                   <td className="px-4 py-2.5" style={{ color: '#94a3b8' }}>{(r.cache_read_tokens / 1000).toFixed(1)}K</td>
