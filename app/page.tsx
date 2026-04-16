@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import { type AgentSession, type AgentLog, type CostRecord, type Project, type Task } from '@/lib/supabase'
 import { LiveStats } from '@/components/realtime/live-stats'
 import { ServiceHealth } from '@/components/service-health'
+import { PipelineMini } from '@/components/pipeline-mini'
 import { ArrowUpRight, Bot, Radio, ListTodo, GitCommit, DollarSign } from 'lucide-react'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
@@ -318,6 +319,15 @@ export default async function DashboardPage() {
                 <p className="font-terminal text-xs" style={{ color: '#334155' }}>Geen kosten vandaag</p>
               )}
             </div>
+          </div>
+        </div>
+
+        {/* Bento grid row 3 — Pipeline */}
+        <div className="hud-card">
+          <div className="hud-corners-bottom" />
+          <BentoHeader title="Pipeline" href="/pipeline" badge={`${activeSessions.length} actief`} />
+          <div className="p-3">
+            <PipelineMini />
           </div>
         </div>
       </div>

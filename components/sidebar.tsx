@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { LayoutDashboard, Bot, Radio, ListTodo, FolderKanban, DollarSign, Activity, Zap, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Bot, Radio, ListTodo, FolderKanban, DollarSign, Activity, Zap, Menu, X, GitMerge } from 'lucide-react'
 
 const nav = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -11,6 +11,7 @@ const nav = [
   { href: '/feed', label: 'Live Feed', icon: Radio },
   { href: '/tasks', label: 'Taken', icon: ListTodo },
   { href: '/projects', label: 'Projecten', icon: FolderKanban },
+  { href: '/pipeline', label: 'Pipeline', icon: GitMerge },
   { href: '/costs', label: 'Kosten', icon: DollarSign },
 ]
 
