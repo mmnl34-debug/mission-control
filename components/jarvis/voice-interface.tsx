@@ -4,123 +4,23 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 
 type JarvisState = 'idle' | 'listening' | 'processing' | 'speaking'
 
-interface StatusData {
-  activeSessions: { agent_name: string; status: string; project: string | null; current_task: string | null }[]
-  recentLogs: { event_type: string; message: string; agent_name: string }[]
-  errors: { event_type: string; message: string; agent_name: string }[]
-  todayCost: number
-  todayTokens: number
-  inProgressTasks: { title: string; status: string }[]
+// Detecteer sluit-intentie lokaal (geen API call nodig)
+function isCloseCommand(t: string): boolean {
+  return /\b(stop|sluit|afsluiten|tot ziens|doei|uitschakelen|sluiten)\b/.test(t.toLowerCase())
 }
 
-// Simple command matcher
-function parseCommand(transcript: string): string {
-  const t = transcript.toLowerCase().trim()
-  // Begroetingen
-  if (/goedemorgen|goedemiddag|goedenavond|hallo|hoi|hey|dag jarvis/.test(t)) return 'greeting'
-  // Sluiten — altijd hoog in prioriteit
-  if (/stop|sluit af|afsluiten|tot ziens|doei|uitschakelen/.test(t)) return 'close'
-  // Fouten — vóór agents checken want "fouten in sessies" zou anders verkeerd matchen
-  if (/fout|fouten|error|errors|probleem|problemen|storing|kapot|mis gaat|misgaat/.test(t)) return 'errors'
-  // Kosten / tokens — vóór algemene status
-  if (/kost|kosten|geld|dollar|budget|token|verbruik|uitgav/.test(t)) return 'costs'
-  // Status algemeen
-  if (/status|rapport|overzicht|hoe gaat|hoe staat|samenvatting|alles goed/.test(t)) return 'status'
-  // Agents / sessies
-  if (/agent|sessie|actief|wie draait|wie is/.test(t)) return 'agents'
-  // Feed / activiteit
-  if (/feed|log|activiteit|gebeurtenis|recente|laatste|nieuws/.test(t)) return 'feed'
-  // Taken
-  if (/taak|taken|todo|bezig|in uitvoering|klaar|done/.test(t)) return 'tasks'
-  // Help
-  if (/help|hulp|wat kan|commando|welke/.test(t)) return 'help'
-  return 'unknown'
-}
-
-async function fetchStatus(): Promise<StatusData | null> {
+async function askJarvis(transcript: string): Promise<string> {
   try {
-    const res = await fetch('/api/jarvis-status')
-    if (!res.ok) return null
-    return res.json()
+    const res = await fetch('/api/jarvis-chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ transcript }),
+    })
+    if (!res.ok) throw new Error('API fout')
+    const data = await res.json()
+    return data.response ?? 'Geen antwoord ontvangen.'
   } catch {
-    return null
-  }
-}
-
-function buildResponse(command: string, data: StatusData | null): string {
-  switch (command) {
-    case 'status': {
-      if (!data) return 'Kan de dashboard data momenteel niet ophalen.'
-      const agentCount = data.activeSessions.length
-      const errorCount = data.errors.length
-      const cost = data.todayCost.toFixed(4)
-      const tokens = data.todayTokens.toLocaleString()
-
-      let msg = `Mission Control statusrapport. `
-      if (agentCount === 0) {
-        msg += `Geen actieve agents op dit moment. `
-      } else if (agentCount === 1) {
-        const a = data.activeSessions[0]
-        msg += `Één agent online: ${a.agent_name}${a.project ? ` op ${a.project}` : ''}. `
-      } else {
-        msg += `${agentCount} agents online. `
-      }
-      msg += `Huidig verbruik vandaag: ${cost} dollar, ${tokens} tokens. `
-      if (errorCount > 0) {
-        msg += `Let op: ${errorCount} fout${errorCount > 1 ? 'en' : ''} gedetecteerd in recente activiteit.`
-      } else {
-        msg += `Geen fouten gedetecteerd. Alle systemen nominaal.`
-      }
-      return msg
-    }
-
-    case 'agents': {
-      if (!data) return 'Kan agent data niet ophalen.'
-      const sessions = data.activeSessions
-      if (sessions.length === 0) return 'Geen agents momenteel actief. Alle systemen in standby.'
-      const list = sessions.map(s =>
-        `${s.agent_name}${s.project ? ` bezig met ${s.project}` : ''}${s.current_task ? `, taak: ${s.current_task}` : ''}`
-      ).join('. ')
-      return `${sessions.length} actieve agent${sessions.length > 1 ? 's' : ''}: ${list}.`
-    }
-
-    case 'feed': {
-      if (!data || data.recentLogs.length === 0) return 'Geen recente activiteit in de feed.'
-      const recent = data.recentLogs.slice(0, 3)
-      const items = recent.map(l => `${l.agent_name}: ${l.message}`).join('. ')
-      return `Recente activiteit: ${items}.`
-    }
-
-    case 'tasks': {
-      if (!data || data.inProgressTasks.length === 0) return 'Geen taken momenteel in uitvoering.'
-      const list = data.inProgressTasks.map(t => t.title).join(', ')
-      return `Taken in uitvoering: ${list}.`
-    }
-
-    case 'costs': {
-      if (!data) return 'Kan kostendata niet ophalen.'
-      return `Totaal verbruik vandaag: ${data.todayCost.toFixed(4)} dollar, met ${data.todayTokens.toLocaleString()} tokens.`
-    }
-
-    case 'errors': {
-      if (!data) return 'Kan foutdata momenteel niet ophalen.'
-      const errs = data.errors
-      if (errs.length === 0) return 'Geen fouten gedetecteerd in de recente activiteit. Alle systemen nominaal.'
-      const list = errs.slice(0, 3).map(e => `${e.agent_name}: ${e.message}`).join('. ')
-      return `${errs.length} fout${errs.length > 1 ? 'en' : ''} gevonden. ${list}.`
-    }
-
-    case 'greeting':
-      return 'Goed je te zien. Alle systemen zijn online. Zeg status voor een volledig rapport, of hulp voor beschikbare commando\'s.'
-
-    case 'help':
-      return 'Beschikbare commando\'s: status, agents, feed, taken, kosten. Zeg stop om mij te sluiten.'
-
-    case 'close':
-      return 'Tot ziens. JARVIS stand-by.'
-
-    default:
-      return 'Commando niet herkend. Zeg hulp voor beschikbare commando\'s.'
+    return 'Kon geen verbinding maken met JARVIS. Probeer opnieuw.'
   }
 }
 
@@ -167,16 +67,25 @@ export function JarvisVoiceInterface() {
     setState('processing')
     setTranscript(text)
 
-    const command = parseCommand(text)
-
-    let data: StatusData | null = null
-    if (['status', 'agents', 'feed', 'tasks', 'costs', 'errors'].includes(command)) {
-      data = await fetchStatus()
+    // Sluit-commando lokaal afhandelen — geen API call
+    if (isCloseCommand(text)) {
+      const reply = 'Tot ziens. JARVIS stand-by.'
+      setResponse(reply)
+      setState('speaking')
+      isSpeakingRef.current = true
+      try { await speakText(reply) } catch { /* ignore */ } finally {
+        isSpeakingRef.current = false
+        setState('idle')
+        setExpanded(false)
+        setTranscript('')
+        setResponse('')
+      }
+      return
     }
 
-    const reply = buildResponse(command, data)
+    // Alles anders → Claude AI
+    const reply = await askJarvis(text)
     setResponse(reply)
-
     setState('speaking')
     isSpeakingRef.current = true
 
@@ -186,14 +95,7 @@ export function JarvisVoiceInterface() {
       console.error('TTS error:', e)
     } finally {
       isSpeakingRef.current = false
-      if (command === 'close') {
-        setState('idle')
-        setExpanded(false)
-        setTranscript('')
-        setResponse('')
-      } else {
-        setState('idle')
-      }
+      setState('idle')
     }
   }, [])
 
@@ -427,7 +329,7 @@ export function JarvisVoiceInterface() {
           )}
 
           <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.12)', fontFamily: 'monospace', letterSpacing: '0.08em', marginTop: 8 }}>
-            ZEG: status · agents · fouten · feed · taken · kosten · stop
+            VRAAG ALLES IN HET NEDERLANDS · ZEG "STOP" OM TE SLUITEN
           </div>
         </div>
       )}
