@@ -3,6 +3,7 @@ import { Geist } from 'next/font/google'
 import './globals.css'
 import { Sidebar } from '@/components/sidebar'
 import { JarvisVoiceInterface } from '@/components/jarvis/voice-interface'
+import { CommandPalette } from '@/components/command-palette'
 
 const geist = Geist({ subsets: ['latin'] })
 
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <JarvisVoiceInterface />
+        <CommandPalette />
       </body>
     </html>
   )

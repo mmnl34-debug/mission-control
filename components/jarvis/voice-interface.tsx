@@ -240,7 +240,7 @@ export function JarvisVoiceInterface() {
     }
   }, [state, stopListening, startListening])
 
-  // Keyboard shortcut: Ctrl+J
+  // Keyboard shortcut: Alt+J
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.altKey && e.key === 'j') {
@@ -250,6 +250,13 @@ export function JarvisVoiceInterface() {
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
+  }, [handleActivate])
+
+  // Custom event: jarvis-activate (dispatched by CommandPalette)
+  useEffect(() => {
+    const handler = () => handleActivate()
+    window.addEventListener('jarvis-activate', handler)
+    return () => window.removeEventListener('jarvis-activate', handler)
   }, [handleActivate])
 
   // Cleanup on unmount

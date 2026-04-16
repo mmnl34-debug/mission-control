@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { type AgentSession, type AgentLog, type CostRecord, type Project, type Task } from '@/lib/supabase'
 import { LiveStats } from '@/components/realtime/live-stats'
+import { ServiceHealth } from '@/components/service-health'
 import { ArrowUpRight, Bot, Radio, ListTodo, GitCommit, DollarSign } from 'lucide-react'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
@@ -60,7 +61,7 @@ async function getDashboardData() {
 function BentoHeader({ title, href, badge }: { title: string; href: string; badge?: string }) {
   return (
     <div
-      className="flex items-center justify-between px-4 py-3"
+      className="flex items-center justify-between px-3 py-2"
       style={{ borderBottom: '1px solid rgba(0,212,255,0.08)' }}
     >
       <div className="flex items-center gap-2">
@@ -109,13 +110,13 @@ export default async function DashboardPage() {
       <div className="orb-purple" style={{ top: '-200px', right: '-150px' }} />
       <div className="orb-cyan" style={{ bottom: '-150px', left: '-100px' }} />
 
-      <div className="relative z-10 p-6 space-y-5">
+      <div className="relative z-10 p-4 space-y-3">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-1">
               <h1
-                className="text-2xl font-bold tracking-widest uppercase font-terminal glow-text"
+                className="text-lg font-bold tracking-widest uppercase font-terminal glow-text"
                 style={{ color: '#f1f5f9', letterSpacing: '0.2em' }}
               >
                 Mission Control
@@ -141,6 +142,9 @@ export default async function DashboardPage() {
           </div>
         </div>
 
+        {/* Service health */}
+        <ServiceHealth />
+
         {/* Stats row */}
         <LiveStats
           initialSessions={sessions}
@@ -149,12 +153,12 @@ export default async function DashboardPage() {
         />
 
         {/* Bento grid row 1 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           {/* Agents card */}
           <div className="hud-card">
             <div className="hud-corners-bottom" />
             <BentoHeader title="Agents" href="/agents" badge={`${activeSessions.length} active`} />
-            <div className="p-4 space-y-2">
+            <div className="p-3 space-y-2">
               {sessions.slice(0, 4).map(session => {
                 const colors: Record<string, string> = { active: '#00d4ff', idle: '#f59e0b', completed: '#4f52a0', error: '#ef4444' }
                 const c = colors[session.status] ?? '#64748b'
@@ -181,7 +185,7 @@ export default async function DashboardPage() {
           <div className="hud-card">
             <div className="hud-corners-bottom" />
             <BentoHeader title="Live Feed" href="/feed" badge={`${logs.length} events`} />
-            <div className="p-4 space-y-2">
+            <div className="p-3 space-y-2">
               {logs.slice(0, 4).map(log => {
                 const eventColors: Record<string, string> = {
                   task_start: '#00d4ff', task_complete: '#10b981', tool_use: '#f59e0b',
@@ -213,7 +217,7 @@ export default async function DashboardPage() {
           <div className="hud-card">
             <div className="hud-corners-bottom" />
             <BentoHeader title="Git Activity" href="https://github.com/mmnl34-debug/mission-control" badge={`${commits.length} commits`} />
-            <div className="p-4 space-y-2.5">
+            <div className="p-3 space-y-2.5">
               {commits.length > 0 ? commits.slice(0, 4).map(commit => (
                 <div key={commit.sha} className="flex items-start gap-2">
                   <GitCommit size={12} className="shrink-0 mt-0.5" style={{ color: '#00d4ff' }} />
@@ -242,12 +246,12 @@ export default async function DashboardPage() {
         </div>
 
         {/* Bento grid row 2 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           {/* Tasks card — 2fr */}
           <div className="hud-card lg:col-span-2">
             <div className="hud-corners-bottom" />
             <BentoHeader title="Taken" href="/tasks" badge={`${doneTasks}/${tasks.length} klaar`} />
-            <div className="p-4">
+            <div className="p-3">
               {/* Progress bar */}
               <div className="mb-3">
                 <div className="w-full h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
@@ -295,7 +299,7 @@ export default async function DashboardPage() {
           <div className="hud-card">
             <div className="hud-corners-bottom" />
             <BentoHeader title="Kosten" href="/costs" badge="vandaag" />
-            <div className="p-4">
+            <div className="p-3">
               <div className="mb-3">
                 <div className="font-terminal text-2xl font-bold" style={{ color: '#f1f5f9' }}>
                   ${todayTotal.toFixed(4)}
