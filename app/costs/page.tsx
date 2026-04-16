@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 
-import { DollarSign, Cpu, TrendingUp, Zap } from 'lucide-react'
+import { DollarSign, Cpu, TrendingUp, Zap, BarChart3 } from 'lucide-react'
 import { format } from 'date-fns'
 import { nl } from 'date-fns/locale'
 import { CostsChart } from '@/components/costs-chart'
@@ -29,6 +29,14 @@ export default async function CostsPage() {
   const totalInput = records.reduce((s: number, r: { input_tokens: number }) => s + r.input_tokens, 0)
   const totalOutput = records.reduce((s: number, r: { output_tokens: number }) => s + r.output_tokens, 0)
   const totalCache = records.reduce((s: number, r: { cache_read_tokens: number }) => s + r.cache_read_tokens, 0)
+  const totalCacheWrite = records.reduce((s: number, r: { cache_write_tokens: number }) => s + (r.cache_write_tokens ?? 0), 0)
+
+  // Token efficiency metrics
+  const totalTokens = totalInput + totalOutput
+  const cacheableTokens = totalInput + totalCache + totalCacheWrite
+  const cacheHitRate = cacheableTokens > 0 ? (totalCache / cacheableTokens) * 100 : 0
+  const tokensPerDollar = totalCost > 0 ? totalTokens / totalCost : 0
+  const efficiencyScore = Math.min(100, Math.round(cacheHitRate * 0.6 + Math.min(tokensPerDollar / 50000, 40)))
 
   // Per model stats
   const byModel: Record<string, { cost: number; tokens: number; count: number }> = {}
@@ -167,6 +175,60 @@ export default async function CostsPage() {
             {Object.keys(byAgent).length === 0 && (
               <p className="text-sm font-terminal text-center py-4" style={{ color: '#475569' }}>Geen data</p>
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* Token Efficiency */}
+      <div className="hud-card p-4">
+        <div className="hud-corners-bottom" />
+        <h2 className="text-sm font-medium text-white mb-4 flex items-center gap-2">
+          <BarChart3 size={14} style={{ color: '#00d4ff' }} /> Token Efficiency Score
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Score meter */}
+          <div className="flex flex-col items-center justify-center p-4 rounded-lg" style={{ background: 'rgba(0,212,255,0.04)', border: '1px solid rgba(0,212,255,0.1)' }}>
+            <div className="font-terminal text-4xl font-bold mb-1" style={{
+              color: efficiencyScore >= 70 ? '#10b981' : efficiencyScore >= 40 ? '#f59e0b' : '#ef4444',
+              textShadow: `0 0 20px ${efficiencyScore >= 70 ? '#10b981' : efficiencyScore >= 40 ? '#f59e0b' : '#ef4444'}60`,
+            }}>
+              {efficiencyScore}
+            </div>
+            <div className="font-terminal text-xs" style={{ color: '#475569' }}>efficiency score</div>
+            <div className="w-full mt-3 h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+              <div className="h-full rounded-full transition-all" style={{
+                width: `${efficiencyScore}%`,
+                background: efficiencyScore >= 70 ? 'linear-gradient(90deg,#10b981,#00d4ff)' : efficiencyScore >= 40 ? '#f59e0b' : '#ef4444',
+              }} />
+            </div>
+          </div>
+
+          {/* Cache hit rate */}
+          <div className="p-4 rounded-lg" style={{ background: 'rgba(245,158,11,0.04)', border: '1px solid rgba(245,158,11,0.1)' }}>
+            <div className="font-terminal text-xs mb-2" style={{ color: '#94a3b8' }}>Cache Hit Rate</div>
+            <div className="font-terminal text-2xl font-bold mb-1" style={{ color: '#f59e0b' }}>
+              {cacheHitRate.toFixed(1)}%
+            </div>
+            <div className="w-full h-1 rounded-full mb-2" style={{ background: 'rgba(255,255,255,0.06)' }}>
+              <div className="h-full rounded-full" style={{ width: `${cacheHitRate}%`, background: '#f59e0b' }} />
+            </div>
+            <div className="font-terminal text-xs" style={{ color: '#475569' }}>
+              {(totalCache / 1000).toFixed(1)}K cache hits
+            </div>
+          </div>
+
+          {/* Tokens per dollar */}
+          <div className="p-4 rounded-lg" style={{ background: 'rgba(16,185,129,0.04)', border: '1px solid rgba(16,185,129,0.1)' }}>
+            <div className="font-terminal text-xs mb-2" style={{ color: '#94a3b8' }}>Tokens per Dollar</div>
+            <div className="font-terminal text-2xl font-bold mb-1" style={{ color: '#10b981' }}>
+              {tokensPerDollar > 1000 ? `${(tokensPerDollar / 1000).toFixed(0)}K` : tokensPerDollar.toFixed(0)}
+            </div>
+            <div className="font-terminal text-xs" style={{ color: '#475569' }}>
+              ${totalCost > 0 ? (totalCost / totalTokens * 1_000_000).toFixed(2) : '0.00'} per 1M tokens
+            </div>
+            <div className="font-terminal text-xs mt-1" style={{ color: '#334155' }}>
+              {(totalTokens / 1000).toFixed(1)}K totale tokens
+            </div>
           </div>
         </div>
       </div>

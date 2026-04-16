@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="nl" className="h-full">
       <body className={`${geist.className} h-full flex`} style={{ background: '#07070f' }}>
         <Sidebar />
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto pt-16 lg:pt-0">
           {children}
         </main>
         <JarvisVoiceInterface />
