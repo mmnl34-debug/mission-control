@@ -47,22 +47,22 @@ export async function ServiceHealth() {
 
   return (
     <div
-      className="flex items-center gap-4 px-3 py-2 rounded-lg font-terminal text-xs"
+      className="font-terminal text-xs"
       style={{
+        display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px 16px',
+        padding: '8px 12px', borderRadius: 8,
         background: 'rgba(0,212,255,0.03)',
         border: '1px solid rgba(0,212,255,0.08)',
       }}
     >
-      <span className="hud-label" style={{ fontSize: '9px' }}>SERVICES</span>
+      <span className="hud-label" style={{ fontSize: '9px', flexShrink: 0 }}>SERVICES</span>
       {services.map((svc) => (
-        <div key={svc.name} className="flex items-center gap-1.5">
-          <span
-            className="w-1.5 h-1.5 rounded-full shrink-0"
-            style={{
-              background: dotColor(svc.status),
-              boxShadow: `0 0 4px ${dotColor(svc.status)}`,
-            }}
-          />
+        <div key={svc.name} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{
+            width: 6, height: 6, borderRadius: '50%', flexShrink: 0, display: 'inline-block',
+            background: dotColor(svc.status),
+            boxShadow: `0 0 4px ${dotColor(svc.status)}`,
+          }} />
           <span style={{ color: '#94a3b8' }}>{svc.name}</span>
           <span style={{ color: '#475569' }}>{svc.latencyMs}ms</span>
         </div>

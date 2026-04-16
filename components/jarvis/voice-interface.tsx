@@ -216,6 +216,7 @@ export function JarvisVoiceInterface() {
   }, [state, stopListening, processCommand])
 
   const handleActivate = useCallback(async () => {
+    // Annuleer als iets actief is
     if (state !== 'idle') {
       stopListening()
       isSpeakingRef.current = false
@@ -223,6 +224,15 @@ export function JarvisVoiceInterface() {
       return
     }
 
+    // Panel al open = tweede tap = direct luisteren (mobiel-vriendelijk)
+    if (expanded) {
+      setTranscript('')
+      setResponse('')
+      startListening()
+      return
+    }
+
+    // Eerste tap: begroeting + panel openen
     setExpanded(true)
     setTranscript('')
     setResponse('')
@@ -235,10 +245,10 @@ export function JarvisVoiceInterface() {
       console.error('Greeting failed:', e)
     } finally {
       isSpeakingRef.current = false
-      setState('listening')
-      startListening()
+      // Na begroeting terug naar idle — gebruiker tikt opnieuw om te spreken
+      setState('idle')
     }
-  }, [state, stopListening, startListening])
+  }, [state, expanded, stopListening, startListening])
 
   // Keyboard shortcut: Alt+J
   useEffect(() => {
@@ -386,7 +396,19 @@ export function JarvisVoiceInterface() {
             </div>
           )}
 
-          <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.15)', fontFamily: 'monospace', letterSpacing: '0.08em', marginTop: 8 }}>
+          {/* Tik hint — alleen zichtbaar in idle met open panel */}
+          {state === 'idle' && (
+            <div style={{
+              marginTop: 10, padding: '6px 10px', borderRadius: 6, textAlign: 'center',
+              background: `${color}10`, border: `1px solid ${color}20`,
+              fontSize: 9, color: `${color}80`, fontFamily: 'monospace', letterSpacing: '0.1em',
+              animation: 'hud-dot 2s ease-in-out infinite',
+            }}>
+              ◉ TIK OM TE SPREKEN
+            </div>
+          )}
+
+          <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.12)', fontFamily: 'monospace', letterSpacing: '0.08em', marginTop: 8 }}>
             ZEG: status · agents · feed · taken · kosten · stop
           </div>
         </div>
