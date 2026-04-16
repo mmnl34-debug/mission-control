@@ -16,14 +16,14 @@ interface StatusData {
 // Simple command matcher
 function parseCommand(transcript: string): string {
   const t = transcript.toLowerCase().trim()
-  if (/good morning|good evening|good afternoon|hello|hi jarvis|hey jarvis|goedemorgen|goedenavond|hallo|hey/.test(t)) return 'greeting'
-  if (/status|rapport|overview|overzicht|hoe gaat|how are|how is|report/.test(t)) return 'status'
-  if (/agent|sessie|session|actief|active/.test(t)) return 'agents'
-  if (/feed|log|event|activiteit|activity/.test(t)) return 'feed'
-  if (/tak|task|todo|bezig|in progress/.test(t)) return 'tasks'
-  if (/kost|cost|geld|dollar|spend|budget|token/.test(t)) return 'costs'
-  if (/help|wat kan|command|hoe werk|what can/.test(t)) return 'help'
-  if (/stop|sluit|close|shut down|afsluiten|goodbye|bye/.test(t)) return 'close'
+  if (/goedemorgen|goedemiddag|goedenavond|hallo|hoi|hey|dag jarvis/.test(t)) return 'greeting'
+  if (/status|rapport|overzicht|hoe gaat|hoe staat/.test(t)) return 'status'
+  if (/agent|sessie|actief/.test(t)) return 'agents'
+  if (/feed|log|activiteit|gebeurtenis/.test(t)) return 'feed'
+  if (/taak|taken|bezig|in uitvoering/.test(t)) return 'tasks'
+  if (/kost|kosten|geld|dollar|budget|token/.test(t)) return 'costs'
+  if (/help|hulp|wat kan|commando/.test(t)) return 'help'
+  if (/stop|sluit|af|afsluiten|tot ziens|doei/.test(t)) return 'close'
   return 'unknown'
 }
 
@@ -40,69 +40,69 @@ async function fetchStatus(): Promise<StatusData | null> {
 function buildResponse(command: string, data: StatusData | null): string {
   switch (command) {
     case 'status': {
-      if (!data) return 'Unable to retrieve dashboard data at this time.'
+      if (!data) return 'Kan de dashboard data momenteel niet ophalen.'
       const agentCount = data.activeSessions.length
       const errorCount = data.errors.length
       const cost = data.todayCost.toFixed(4)
       const tokens = data.todayTokens.toLocaleString()
 
-      let msg = `Mission Control status report. `
+      let msg = `Mission Control statusrapport. `
       if (agentCount === 0) {
-        msg += `No agents currently active. `
+        msg += `Geen actieve agents op dit moment. `
       } else if (agentCount === 1) {
         const a = data.activeSessions[0]
-        msg += `One agent online: ${a.agent_name}${a.project ? ` on ${a.project}` : ''}. `
+        msg += `Één agent online: ${a.agent_name}${a.project ? ` op ${a.project}` : ''}. `
       } else {
         msg += `${agentCount} agents online. `
       }
-      msg += `Today's spend: ${cost} dollars, ${tokens} tokens. `
+      msg += `Huidig verbruik vandaag: ${cost} dollar, ${tokens} tokens. `
       if (errorCount > 0) {
-        msg += `Warning: ${errorCount} error${errorCount > 1 ? 's' : ''} detected in recent activity.`
+        msg += `Let op: ${errorCount} fout${errorCount > 1 ? 'en' : ''} gedetecteerd in recente activiteit.`
       } else {
-        msg += `No errors detected. All systems nominal.`
+        msg += `Geen fouten gedetecteerd. Alle systemen nominaal.`
       }
       return msg
     }
 
     case 'agents': {
-      if (!data) return 'Unable to retrieve agent data.'
+      if (!data) return 'Kan agent data niet ophalen.'
       const sessions = data.activeSessions
-      if (sessions.length === 0) return 'No agents are currently active. All systems are standing by.'
+      if (sessions.length === 0) return 'Geen agents momenteel actief. Alle systemen in standby.'
       const list = sessions.map(s =>
-        `${s.agent_name}${s.project ? ` working on ${s.project}` : ''}${s.current_task ? `, task: ${s.current_task}` : ''}`
+        `${s.agent_name}${s.project ? ` bezig met ${s.project}` : ''}${s.current_task ? `, taak: ${s.current_task}` : ''}`
       ).join('. ')
-      return `${sessions.length} active agent${sessions.length > 1 ? 's' : ''}: ${list}.`
+      return `${sessions.length} actieve agent${sessions.length > 1 ? 's' : ''}: ${list}.`
     }
 
     case 'feed': {
-      if (!data || data.recentLogs.length === 0) return 'No recent activity in the feed.'
+      if (!data || data.recentLogs.length === 0) return 'Geen recente activiteit in de feed.'
       const recent = data.recentLogs.slice(0, 3)
       const items = recent.map(l => `${l.agent_name}: ${l.message}`).join('. ')
-      return `Recent activity: ${items}.`
+      return `Recente activiteit: ${items}.`
     }
 
     case 'tasks': {
-      if (!data || data.inProgressTasks.length === 0) return 'No tasks currently in progress.'
+      if (!data || data.inProgressTasks.length === 0) return 'Geen taken momenteel in uitvoering.'
       const list = data.inProgressTasks.map(t => t.title).join(', ')
-      return `Tasks in progress: ${list}.`
+      return `Taken in uitvoering: ${list}.`
     }
 
     case 'costs': {
-      if (!data) return 'Unable to retrieve cost data.'
-      return `Today's total spend is ${data.todayCost.toFixed(4)} dollars, using ${data.todayTokens.toLocaleString()} tokens.`
+      if (!data) return 'Kan kostendata niet ophalen.'
+      return `Totaal verbruik vandaag: ${data.todayCost.toFixed(4)} dollar, met ${data.todayTokens.toLocaleString()} tokens.`
     }
 
     case 'greeting':
-      return 'Good to see you. All systems are online. Say status for a full report, or help for available commands.'
+      return 'Goed je te zien. Alle systemen zijn online. Zeg status voor een volledig rapport, of hulp voor beschikbare commando\'s.'
 
     case 'help':
-      return 'Available commands: status, agents, feed, tasks, costs. Say stop to close me.'
+      return 'Beschikbare commando\'s: status, agents, feed, taken, kosten. Zeg stop om mij te sluiten.'
 
     case 'close':
-      return 'Signing off. JARVIS standing by.'
+      return 'Tot ziens. JARVIS stand-by.'
 
     default:
-      return `Command not recognized. Say "help" for available commands.`
+      return 'Commando niet herkend. Zeg hulp voor beschikbare commando\'s.'
   }
 }
 
@@ -181,7 +181,7 @@ export function JarvisVoiceInterface() {
 
   const startListening = useCallback(() => {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      alert('Speech recognition is not supported in this browser. Use Microsoft Edge or Google Chrome.')
+      alert('Spraakherkenning wordt niet ondersteund in deze browser. Gebruik Microsoft Edge of Google Chrome.')
       return
     }
 
@@ -190,7 +190,7 @@ export function JarvisVoiceInterface() {
       (window as unknown as { webkitSpeechRecognition?: typeof SpeechRecognition }).webkitSpeechRecognition!
 
     const recognition = new SpeechRecognitionAPI()
-    recognition.lang = 'en-US'
+    recognition.lang = 'nl-NL'
     recognition.interimResults = false
     recognition.maxAlternatives = 1
     recognitionRef.current = recognition
@@ -230,7 +230,7 @@ export function JarvisVoiceInterface() {
     isSpeakingRef.current = true
 
     try {
-      await speakText('Mission Control online. How can I assist?')
+      await speakText('Mission Control online. Hoe kan ik je helpen?')
     } catch (e) {
       console.error('Greeting failed:', e)
     } finally {
@@ -338,7 +338,7 @@ export function JarvisVoiceInterface() {
 
           {transcript && (
             <div style={{ marginBottom: 8 }}>
-              <div style={{ fontSize: 9, color: 'rgba(0,212,255,0.5)', letterSpacing: '0.1em', marginBottom: 4, fontFamily: 'monospace' }}>YOU SAID</div>
+              <div style={{ fontSize: 9, color: 'rgba(0,212,255,0.5)', letterSpacing: '0.1em', marginBottom: 4, fontFamily: 'monospace' }}>JIJ ZEI</div>
               <div style={{ fontSize: 12, color: '#e2e8f0', fontStyle: 'italic', lineHeight: 1.4 }}>"{transcript}"</div>
             </div>
           )}
@@ -351,7 +351,7 @@ export function JarvisVoiceInterface() {
           )}
 
           <div style={{ marginTop: 12, fontSize: 9, color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', letterSpacing: '0.05em' }}>
-            SAY: status · agents · feed · tasks · costs · stop
+            ZEG: status · agents · feed · taken · kosten · stop
           </div>
         </div>
       )}
