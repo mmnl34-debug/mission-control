@@ -16,13 +16,14 @@ interface StatusData {
 // Simple command matcher
 function parseCommand(transcript: string): string {
   const t = transcript.toLowerCase().trim()
-  if (/status|rapport|overview|overzicht|hoe gaat/.test(t)) return 'status'
-  if (/agent|sessie|session|actief/.test(t)) return 'agents'
-  if (/feed|log|event|activiteit/.test(t)) return 'feed'
+  if (/good morning|good evening|good afternoon|hello|hi jarvis|hey jarvis|goedemorgen|goedenavond|hallo|hey/.test(t)) return 'greeting'
+  if (/status|rapport|overview|overzicht|hoe gaat|how are|how is|report/.test(t)) return 'status'
+  if (/agent|sessie|session|actief|active/.test(t)) return 'agents'
+  if (/feed|log|event|activiteit|activity/.test(t)) return 'feed'
   if (/tak|task|todo|bezig|in progress/.test(t)) return 'tasks'
   if (/kost|cost|geld|dollar|spend|budget|token/.test(t)) return 'costs'
-  if (/help|wat kan|command|hoe werk/.test(t)) return 'help'
-  if (/stop|sluit|close|shut down|afsluiten/.test(t)) return 'close'
+  if (/help|wat kan|command|hoe werk|what can/.test(t)) return 'help'
+  if (/stop|sluit|close|shut down|afsluiten|goodbye|bye/.test(t)) return 'close'
   return 'unknown'
 }
 
@@ -90,6 +91,9 @@ function buildResponse(command: string, data: StatusData | null): string {
       if (!data) return 'Unable to retrieve cost data.'
       return `Today's total spend is ${data.todayCost.toFixed(4)} dollars, using ${data.todayTokens.toLocaleString()} tokens.`
     }
+
+    case 'greeting':
+      return 'Good to see you. All systems are online. Say status for a full report, or help for available commands.'
 
     case 'help':
       return 'Available commands: status, agents, feed, tasks, costs. Say stop to close me.'
@@ -186,7 +190,7 @@ export function JarvisVoiceInterface() {
       (window as unknown as { webkitSpeechRecognition?: typeof SpeechRecognition }).webkitSpeechRecognition!
 
     const recognition = new SpeechRecognitionAPI()
-    recognition.lang = 'nl-NL'
+    recognition.lang = 'en-US'
     recognition.interimResults = false
     recognition.maxAlternatives = 1
     recognitionRef.current = recognition
