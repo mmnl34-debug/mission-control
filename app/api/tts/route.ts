@@ -39,7 +39,9 @@ export async function POST(req: NextRequest) {
 
   if (!response.ok) {
     const error = await response.text()
-    return NextResponse.json({ error }, { status: response.status })
+    console.error('[TTS] ElevenLabs error', response.status, error)
+    console.error('[TTS] key prefix:', ELEVENLABS_API_KEY?.slice(0, 12), 'voice:', ELEVENLABS_VOICE_ID)
+    return NextResponse.json({ error, status: response.status }, { status: response.status })
   }
 
   return new NextResponse(response.body, {
