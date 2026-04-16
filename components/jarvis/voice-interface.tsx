@@ -16,14 +16,24 @@ interface StatusData {
 // Simple command matcher
 function parseCommand(transcript: string): string {
   const t = transcript.toLowerCase().trim()
+  // Begroetingen
   if (/goedemorgen|goedemiddag|goedenavond|hallo|hoi|hey|dag jarvis/.test(t)) return 'greeting'
-  if (/status|rapport|overzicht|hoe gaat|hoe staat/.test(t)) return 'status'
-  if (/agent|sessie|actief/.test(t)) return 'agents'
-  if (/feed|log|activiteit|gebeurtenis/.test(t)) return 'feed'
-  if (/taak|taken|bezig|in uitvoering/.test(t)) return 'tasks'
-  if (/kost|kosten|geld|dollar|budget|token/.test(t)) return 'costs'
-  if (/help|hulp|wat kan|commando/.test(t)) return 'help'
-  if (/stop|sluit|af|afsluiten|tot ziens|doei/.test(t)) return 'close'
+  // Sluiten — altijd hoog in prioriteit
+  if (/stop|sluit af|afsluiten|tot ziens|doei|uitschakelen/.test(t)) return 'close'
+  // Fouten — vóór agents checken want "fouten in sessies" zou anders verkeerd matchen
+  if (/fout|fouten|error|errors|probleem|problemen|storing|kapot|mis gaat|misgaat/.test(t)) return 'errors'
+  // Kosten / tokens — vóór algemene status
+  if (/kost|kosten|geld|dollar|budget|token|verbruik|uitgav/.test(t)) return 'costs'
+  // Status algemeen
+  if (/status|rapport|overzicht|hoe gaat|hoe staat|samenvatting|alles goed/.test(t)) return 'status'
+  // Agents / sessies
+  if (/agent|sessie|actief|wie draait|wie is/.test(t)) return 'agents'
+  // Feed / activiteit
+  if (/feed|log|activiteit|gebeurtenis|recente|laatste|nieuws/.test(t)) return 'feed'
+  // Taken
+  if (/taak|taken|todo|bezig|in uitvoering|klaar|done/.test(t)) return 'tasks'
+  // Help
+  if (/help|hulp|wat kan|commando|welke/.test(t)) return 'help'
   return 'unknown'
 }
 
@@ -92,6 +102,14 @@ function buildResponse(command: string, data: StatusData | null): string {
       return `Totaal verbruik vandaag: ${data.todayCost.toFixed(4)} dollar, met ${data.todayTokens.toLocaleString()} tokens.`
     }
 
+    case 'errors': {
+      if (!data) return 'Kan foutdata momenteel niet ophalen.'
+      const errs = data.errors
+      if (errs.length === 0) return 'Geen fouten gedetecteerd in de recente activiteit. Alle systemen nominaal.'
+      const list = errs.slice(0, 3).map(e => `${e.agent_name}: ${e.message}`).join('. ')
+      return `${errs.length} fout${errs.length > 1 ? 'en' : ''} gevonden. ${list}.`
+    }
+
     case 'greeting':
       return 'Goed je te zien. Alle systemen zijn online. Zeg status voor een volledig rapport, of hulp voor beschikbare commando\'s.'
 
@@ -152,7 +170,7 @@ export function JarvisVoiceInterface() {
     const command = parseCommand(text)
 
     let data: StatusData | null = null
-    if (['status', 'agents', 'feed', 'tasks', 'costs'].includes(command)) {
+    if (['status', 'agents', 'feed', 'tasks', 'costs', 'errors'].includes(command)) {
       data = await fetchStatus()
     }
 
@@ -409,7 +427,7 @@ export function JarvisVoiceInterface() {
           )}
 
           <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.12)', fontFamily: 'monospace', letterSpacing: '0.08em', marginTop: 8 }}>
-            ZEG: status · agents · feed · taken · kosten · stop
+            ZEG: status · agents · fouten · feed · taken · kosten · stop
           </div>
         </div>
       )}
