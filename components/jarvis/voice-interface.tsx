@@ -239,7 +239,7 @@ export function JarvisVoiceInterface() {
   // Keyboard shortcut: Ctrl+J
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === 'j') {
+      if (e.altKey && e.key === 'j') {
         e.preventDefault()
         handleActivate()
       }
@@ -355,7 +355,7 @@ export function JarvisVoiceInterface() {
       {/* Main button */}
       <button
         onClick={handleActivate}
-        title="JARVIS Voice Interface (Ctrl+J)"
+        title="JARVIS Voice Interface (Alt+J)"
         style={{
           width: 52,
           height: 52,
