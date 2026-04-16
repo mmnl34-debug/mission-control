@@ -3,7 +3,8 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
 
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY
-const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID ?? 'wDsJlOXPqcvIUKdLXjDs'
+// Adam - gratis stem, mannelijk, geschikt als JARVIS
+const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID ?? 'pNInz6obpgDQGcFmaJgB'
 
 export async function POST(req: NextRequest) {
   const { text } = await req.json()
