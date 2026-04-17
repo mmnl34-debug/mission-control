@@ -1,0 +1,130 @@
+[
+  {
+    "timestamp": 1776085984687,
+    "nodes": 23,
+    "edges": 11,
+    "pageRankSum": 0.9999999999999999,
+    "confidences": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "accessCounts": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "topPatterns": [
+      {
+        "id": "mem-project_reel_pipeline-volgende-stap--nog-te-doen-",
+        "summary": "Volgende stap (nog te doen)",
+        "confidence": 0.5,
+        "pageRank": 0.09867240569869928,
+        "accessCount": 0
+      },
+      {
+        "id": "mem-project_reel_pipeline-workflow",
+        "summary": "Workflow",
+        "confidence": 0.5,
+        "pageRank": 0.08478392550910367,
+        "accessCount": 0
+      },
+      {
+        "id": "mem-project_paperclip-openstaand-probleem--ui-niet-b",
+        "summary": "Openstaand probleem: UI niet bereikbaar vanuit Windows brows",
+        "confidence": 0.5,
+        "pageRank": 0.06844440137033136,
+        "accessCount": 0
+      },
+      {
+        "id": "mem-project_reel_pipeline-projectstructuur",
+        "summary": "Projectstructuur",
+        "confidence": 0.5,
+        "pageRank": 0.06844440137033136,
+        "accessCount": 0
+      },
+      {
+        "id": "mem-project_remotion-ge-nstalleerde-skills",
+        "summary": "Geïnstalleerde skills",
+        "confidence": 0.5,
+        "pageRank": 0.06844440137033136,
+        "accessCount": 0
+      },
+      {
+        "id": "mem-reference_design_inspiratie-werkwijze",
+        "summary": "Werkwijze",
+        "confidence": 0.5,
+        "pageRank": 0.06844440137033136,
+        "accessCount": 0
+      },
+      {
+        "id": "mem-project_paperclip-of-handmatig-",
+        "summary": "Of handmatig:",
+        "confidence": 0.5,
+        "pageRank": 0.049221430051324365,
+        "accessCount": 0
+      },
+      {
+        "id": "mem-project_reel_pipeline-status--stand--2026-04-08-",
+        "summary": "Status (stand: 2026-04-08)",
+        "confidence": 0.5,
+        "pageRank": 0.049221430051324365,
+        "accessCount": 0
+      },
+      {
+        "id": "mem-project_remotion-opstarten",
+        "summary": "Opstarten",
+        "confidence": 0.5,
+        "pageRank": 0.049221430051324365,
+        "accessCount": 0
+      },
+      {
+        "id": "mem-reference_design_inspiratie-bronnen",
+        "summary": "Bronnen",
+        "confidence": 0.5,
+        "pageRank": 0.049221430051324365,
+        "accessCount": 0
+      }
+    ]
+  }
+]

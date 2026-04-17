@@ -1,0 +1,302 @@
+[
+  {
+    "id": "mem-MEMORY-memory-index",
+    "key": "memory-index",
+    "content": "- [NotebookLM setup](project_notebooklm.md) — venv pad, notebook IDs (Role Model / Myself / Business), auth status\n- [PostHog setup landing page](project_posthog.md) — project 368772 (US), landing.html, events, A/B test hero-ab-test\n- [Remotion project](project_remotion.md) — ~/projects/mijn-project/my-video/, npm run dev op :3000, skill geïnstalleerd\n- [Webserver voorkeur](feedback_webserver.md) — poort 8080 bezet, gebruik 8090+, altijd python3 http.server, automatisch starten\n- [Aerts Schilder",
+    "summary": "Memory Index",
+    "namespace": "core",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/MEMORY.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381099
+  },
+  {
+    "id": "mem-feedback_webserver----",
+    "key": "-",
+    "content": "name: Webserver voorkeur\ndescription: Poortvoorkeur en methode voor het bekijken van lokale websites\ntype: feedback\n---\n\nGebruik altijd `python3 -m http.server` (optie 2) om websites te serveren — nooit een bestandspad rechtstreeks openen.\n\nPoort 8080 is bezet op dit systeem. Begin altijd bij poort 8090 en werk omhoog (8091, 8092...) als die ook bezet is.\n\n**Why:** 8080 is al in gebruik door een ander proces op dit WSL-systeem.\n\n**How to apply:** Bij elke website die gebouwd wordt en bekeken moe",
+    "summary": "---",
+    "namespace": "feedback_webserver",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/feedback_webserver.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381101
+  },
+  {
+    "id": "mem-project_aerts----",
+    "key": "-",
+    "content": "name: Aerts Schilderwerken website\ndescription: Website project voor schildersbedrijf Aerts — visueel verbeterd met 2026 design\ntype: project\noriginSessionId: 9d6c4235-2885-4d5c-936b-0d7e5faee9cd\n---\nWebsite gebouwd voor Aerts Schilderwerken (schildersbedrijf, woningen + bedrijven, verfspuit).\n\n**Bestand:** `/home/claudedev/projects/mijn-project/aerts-schilderwerken/index.html`\n**Bekijken via WSL:** `\\\\wsl$\\Ubuntu\\home\\claudedev\\projects\\mijn-project\\aerts-schilderwerken\\index.html`\n**Webserver:",
+    "summary": "---",
+    "namespace": "project_aerts",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/project_aerts.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381113
+  },
+  {
+    "id": "mem-project_notebooklm----",
+    "key": "-",
+    "content": "name: NotebookLM setup\ndescription: notebooklm-py installatie, venv pad, notebook IDs voor de drie research agents\ntype: project\n---\n\nnotebooklm-py is geinstalleerd en geconfigureerd.\n\n**CLI pad:** `/home/claudedev/projects/mijn-project/.venv/bin/notebooklm`\n**Skill:** geinstalleerd in `~/.claude/skills/notebooklm`\n**Auth:** actief, sessie opgeslagen in `~/.notebooklm/storage_state.json`\n\n**Notebook IDs:**\n- Role Model: `19ac407f-214b-484a-ad98-9380e440445e`\n- Research Agent - Myself: `418e9f66-",
+    "summary": "---",
+    "namespace": "project_notebooklm",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/project_notebooklm.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381116
+  },
+  {
+    "id": "mem-project_paperclip----",
+    "key": "-",
+    "content": "name: Paperclip installatie\ndescription: Paperclip AI orchestration tool geïnstalleerd op ~/projects/paperclip, WSL2 TCP workaround via Unix socket\ntype: project\n---\n\nPaperclip (https://github.com/paperclipai/paperclip) is geïnstalleerd op `/home/claudedev/projects/paperclip`.\n\n**Why:** Multi-agent orchestration tool — organiseert AI-agents als medewerkers in een bedrijfsstructuur met org charts, budgets en goals.\n\n**Startcommando (altijd via start.sh of met expliciete env vars):**\n```bash\ncd ~/",
+    "summary": "---",
+    "namespace": "project_paperclip",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/project_paperclip.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381119
+  },
+  {
+    "id": "mem-project_paperclip-of-handmatig-",
+    "key": "of-handmatig-",
+    "content": "DATABASE_URL=\"postgres:///paperclip\" PGHOST=\"/var/run/postgresql\" PGUSER=\"paperclip\" PGPASSWORD=\"paperclip\" PAPERCLIP_MIGRATION_AUTO_APPLY=true pnpm dev\n```\n\n**URL:** http://localhost:3100\n\n**WSL2 workaround:** TCP naar 127.0.0.1 is geblokkeerd voor claudedev-processen (sandbox). Oplossing: Unix socket via PGHOST=/var/run/postgresql + DATABASE_URL=postgres:///paperclip. Postgres.js gebruikt PGHOST als url.hostname leeg is.\n\n**PostgreSQL:** \n- Versie 16, draait via `sudo pg_ctlcluster 16 main sta",
+    "summary": "Of handmatig:",
+    "namespace": "project_paperclip",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/project_paperclip.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381119
+  },
+  {
+    "id": "mem-project_paperclip-openstaand-probleem--ui-niet-b",
+    "key": "openstaand-probleem-ui-niet-bereikbaar-vanuit-wind",
+    "content": "**Status (2026-04-10):** Server draait correct op 0.0.0.0:3100 in WSL2, maar Windows browser kan er niet bij.\n\n**Wat al geprobeerd is:**\n- Server luistert op 0.0.0.0:3100 (gepatcht: index.ts regel 434 — local_trusted blokkeert nu niet meer bij 0.0.0.0)\n- Windows Firewall regel aangemaakt voor poort 3100 (New-NetFirewallRule, status OK)\n- netsh portproxy mislukt door copy-paste lijnbreukprobleem in PowerShell\n- Tailscale IP (100.90.151.101) geprobeerd — timeout\n- WSL2 IP (192.168.2.45) geprobeerd",
+    "summary": "Openstaand probleem: UI niet bereikbaar vanuit Windows browser",
+    "namespace": "project_paperclip",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/project_paperclip.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381119
+  },
+  {
+    "id": "mem-project_posthog----",
+    "key": "-",
+    "content": "name: PostHog setup landing page\ndescription: PostHog analytics, custom event tracking en A/B test opgezet op landing.html\ntype: project\n---\n\nPostHog volledig geïnstalleerd op `landing.html` (Vanta demo landing page).\n\n**PostHog project:** `368772` op `https://us.posthog.com` (US regio)\n**API key:** `phc_kFw4Pg6dQaSGwdCwK3sbrYxdNEXGY8quXAaDHHvV3h65`\n**Lokale server:** `python3 -m http.server 3000` (poort 8080 bezet door SABnzbd)\n\n**Getrackte events:**\n- `button_clicked` — alle knoppen met `butto",
+    "summary": "---",
+    "namespace": "project_posthog",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/project_posthog.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381120
+  },
+  {
+    "id": "mem-project_reel_pipeline----",
+    "key": "-",
+    "content": "name: Reel pipeline setup\ndescription: 3-staps pipeline voor het maken van AI-reels via fal.ai + Remotion + Notion\ntype: project\n---\n\nWe bouwen een geautomatiseerde reel-pipeline vanuit de terminal. Alles is geïnstalleerd en klaar.\n\n**Why:** Gertjan wil reels maken zonder video-editor te openen — alles via Claude Code conversationeel aansturen.\n\n**How to apply:** Bij vragen over visuals, video assemblage of Notion tracking: verwijs naar deze pipeline en projectmappen.",
+    "summary": "---",
+    "namespace": "project_reel_pipeline",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/project_reel_pipeline.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381123
+  },
+  {
+    "id": "mem-project_reel_pipeline-status--stand--2026-04-08-",
+    "key": "status-stand-2026-04-08-",
+    "content": "| Component | Status | Locatie |\n|-----------|--------|---------|\n| fal.ai client | ✅ geïnstalleerd | `~/projects/mijn-project/my-video/node_modules/@fal-ai/client` |\n| Remotion | ✅ geïnstalleerd | `~/projects/mijn-project/my-video/` |\n| Notion MCP | ✅ verbonden | claude.ai Notion MCP (https://mcp.notion.com/mcp) |\n| my-reel mappen | ✅ aangemaakt, nog leeg | `~/projects/mijn-project/my-reel/` |",
+    "summary": "Status (stand: 2026-04-08)",
+    "namespace": "project_reel_pipeline",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/project_reel_pipeline.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381123
+  },
+  {
+    "id": "mem-project_reel_pipeline-projectstructuur",
+    "key": "projectstructuur",
+    "content": "```\n~/projects/mijn-project/\n├── my-video/          ← Remotion project (npm run dev → :3000)\n│   ├── src/\n│   └── package.json   ← bevat @fal-ai/client + remotion\n└── my-reel/           ← reel assets\n    ├── visuals/       ← gegenereerde afbeeldingen (fal.ai output)\n    ├── voiceover/     ← audio bestanden\n    ├── captions/      ← ondertitels\n    └── exports/       ← finale MP4 renders\n```",
+    "summary": "Projectstructuur",
+    "namespace": "project_reel_pipeline",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/project_reel_pipeline.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381123
+  },
+  {
+    "id": "mem-project_reel_pipeline-workflow",
+    "key": "workflow",
+    "content": "1. **Visuals genereren** → fal.ai (Nano Banana 2 voor fotorealistisch, FLUX voor grafisch)\n2. **Video assembleren** → Remotion compositie in `my-video/src/`, render naar `my-reel/exports/`\n3. **Notion bijwerken** → via Notion MCP, database/pagina's automatisch updaten",
+    "summary": "Workflow",
+    "namespace": "project_reel_pipeline",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/project_reel_pipeline.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381123
+  },
+  {
+    "id": "mem-project_reel_pipeline-volgende-stap--nog-te-doen-",
+    "key": "volgende-stap-nog-te-doen-",
+    "content": "- Notion database aanmaken/koppelen voor reel tracking\n- Eerste reel genereren met visuals via fal.ai\n- Remotion compositie bouwen die my-reel assets gebruikt",
+    "summary": "Volgende stap (nog te doen)",
+    "namespace": "project_reel_pipeline",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/project_reel_pipeline.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381123
+  },
+  {
+    "id": "mem-project_remotion----",
+    "key": "-",
+    "content": "name: Remotion project setup\ndescription: Locatie en opstartprocedure voor het Remotion video project\ntype: project\n---\n\nRemotion project staat op: `~/projects/mijn-project/my-video/`\n\n**Why:** Aangemaakt via `npx create-video@latest` (Blank template + TailwindCSS + skills)\n\n**How to apply:** Bij Remotion-gerelateerde vragen altijd vanuit deze map werken.",
+    "summary": "---",
+    "namespace": "project_remotion",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/project_remotion.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381127
+  },
+  {
+    "id": "mem-project_remotion-opstarten",
+    "key": "opstarten",
+    "content": "Terminal 1 — preview server:\n```bash\ncd ~/projects/mijn-project/my-video && npm run dev\n```\n→ draait op http://localhost:3000\n\nTerminal 2 — Claude Code:\n```bash\ncd ~/projects/mijn-project/my-video && claude\n```",
+    "summary": "Opstarten",
+    "namespace": "project_remotion",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/project_remotion.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381127
+  },
+  {
+    "id": "mem-project_remotion-ge-nstalleerde-skills",
+    "key": "ge-nstalleerde-skills",
+    "content": "- `.agents/skills/remotion-best-practices/` — project-level skill voor Claude Code\n- `~/.agents/skills/find-skills/` — globale skill voor alle agents",
+    "summary": "Geïnstalleerde skills",
+    "namespace": "project_remotion",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/project_remotion.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381127
+  },
+  {
+    "id": "mem-reference_design_inspiratie----",
+    "key": "-",
+    "content": "name: Design inspiratiebronnen\ndescription: Links naar tools die Gertjan heeft verzameld als inspiratie voor ontwerpen — niet direct bruikbaar via API, maar wel als referentie voor originele designs\ntype: reference\n---\n\nGertjan heeft een collectie links verzameld die als inspiratiebron dienen bij het ontwerpen. Het doel is om ideeën op te doen en vervolgens iets **origineels** te maken — niet kopiëren, maar laten inspireren.",
+    "summary": "---",
+    "namespace": "reference_design_inspiratie",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/reference_design_inspiratie.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381129
+  },
+  {
+    "id": "mem-reference_design_inspiratie-bronnen",
+    "key": "bronnen",
+    "content": "### Toolio — gecureerde tool-directory\n- URL: https://toolio.tools/\n- Wat: overzicht van 100+ digitale tools (AI, design, marketing, no-code)\n- Gebruik: WebFetch een specifieke pagina voor inspiratie op UI/UX vlak\n\n### Unicorn Studio — no-code WebGL animaties\n- URL: https://www.unicorn.studio/\n- Wat: visueel rijke animaties (gradients, particles, shaders) voor het web\n- Gebruik: Gertjan maakt iets, ik integreer de embed-code; of gebruik als visuele stijlreferentie\n\n### MagicPath AI — AI design t",
+    "summary": "Bronnen",
+    "namespace": "reference_design_inspiratie",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/reference_design_inspiratie.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381129
+  },
+  {
+    "id": "mem-reference_design_inspiratie-werkwijze",
+    "key": "werkwijze",
+    "content": "Bij een nieuw ontwerp: haal één of meerdere van deze sites op met WebFetch, analyseer de stijl/structuur, en gebruik dat als vertrekpunt voor iets origineels.",
+    "summary": "Werkwijze",
+    "namespace": "reference_design_inspiratie",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/reference_design_inspiratie.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381129
+  },
+  {
+    "id": "mem-reference_promptfoo----",
+    "key": "-",
+    "content": "name: Promptfoo gereedschapskist\ndescription: Promptfoo bewaard als toekomstige tool voor het testen en red teamen van eigen LLM-applicaties\ntype: reference\noriginSessionId: 69ae940f-f425-41c3-b039-fe96c0fbf6eb\n---\nPromptfoo (https://github.com/promptfoo/promptfoo) is een open-source CLI voor het evalueren en red teamen van LLM-applicaties.\n\nBewust nog niet geïnstalleerd — nu geen toegevoegde waarde omdat er nog geen eigen LLM-apps zijn.\n\n**Inzetten zodra:** er een project komt met eigen prompts",
+    "summary": "---",
+    "namespace": "reference_promptfoo",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/reference_promptfoo.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381130
+  },
+  {
+    "id": "mem-reference_superset----",
+    "key": "-",
+    "content": "name: Superset waitlist\ndescription: Superset.sh — parallel AI agents tool, waitlist ingevuld, nog niet beschikbaar voor Linux/WSL\ntype: reference\noriginSessionId: 758d61a3-90c9-4120-b0fe-059f8f8e8d74\n---\nSuperset (https://superset.sh) is een terminal-tool om tientallen AI-coding agents parallel te draaien in geïsoleerde Git worktrees. Ondersteunt Claude Code, Cursor, Codex etc.\n\nGertjan heeft de email-waitlist ingevuld voor wanneer Linux/WSL ondersteuning beschikbaar komt.\n\n**Huidige status (ap",
+    "summary": "---",
+    "namespace": "reference_superset",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/reference_superset.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381144
+  },
+  {
+    "id": "mem-reference_toolio----",
+    "key": "-",
+    "content": "name: Toolio als design-inspiratiebron\ndescription: Toolio (toolio.tools) is een tool-directory die als inspiratie gebruikt kan worden bij het ontwerpen\ntype: reference\n---\n\nToolio is een gecureerde directory van digitale tools op https://toolio.tools/ (AI, design, marketing, no-code, development).\n\nGertjan gebruikt het als **inspiratiebron bij ontwerpen**: hij geeft een link naar een Toolio-pagina, waarna ik de site ophaal met WebFetch, de design/structuur analyseer, en dat gebruik als basis om",
+    "summary": "---",
+    "namespace": "reference_toolio",
+    "type": "semantic",
+    "metadata": {
+      "sourceFile": "/home/claudedev/.claude/projects/-home-claudedev-projects-mijn-project/memory/reference_toolio.md",
+      "bootstrapped": true
+    },
+    "createdAt": 1776071381146
+  },
+  {
+    "id": "insight-1776085984664-s66e",
+    "key": "frequent-edit-unknown",
+    "content": "File unknown was edited 5 times this session — likely a hot path worth monitoring.",
+    "summary": "Frequently edited: unknown (5x)",
+    "namespace": "insights",
+    "type": "procedural",
+    "metadata": {
+      "sourceFile": "unknown",
+      "editCount": 5,
+      "autoGenerated": true
+    },
+    "createdAt": 1776085984665
+  }
+]

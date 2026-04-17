@@ -1,0 +1,261 @@
+{
+  "version": 1,
+  "updatedAt": 1776085984682,
+  "nodeCount": 23,
+  "nodes": {
+    "mem-MEMORY-memory-index": {
+      "id": "mem-MEMORY-memory-index",
+      "category": "core",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381099
+    },
+    "mem-feedback_webserver----": {
+      "id": "mem-feedback_webserver----",
+      "category": "feedback_webserver",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381101
+    },
+    "mem-project_aerts----": {
+      "id": "mem-project_aerts----",
+      "category": "project_aerts",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381113
+    },
+    "mem-project_notebooklm----": {
+      "id": "mem-project_notebooklm----",
+      "category": "project_notebooklm",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381116
+    },
+    "mem-project_paperclip----": {
+      "id": "mem-project_paperclip----",
+      "category": "project_paperclip",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381119
+    },
+    "mem-project_paperclip-of-handmatig-": {
+      "id": "mem-project_paperclip-of-handmatig-",
+      "category": "project_paperclip",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381119
+    },
+    "mem-project_paperclip-openstaand-probleem--ui-niet-b": {
+      "id": "mem-project_paperclip-openstaand-probleem--ui-niet-b",
+      "category": "project_paperclip",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381119
+    },
+    "mem-project_posthog----": {
+      "id": "mem-project_posthog----",
+      "category": "project_posthog",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381120
+    },
+    "mem-project_reel_pipeline----": {
+      "id": "mem-project_reel_pipeline----",
+      "category": "project_reel_pipeline",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381123
+    },
+    "mem-project_reel_pipeline-status--stand--2026-04-08-": {
+      "id": "mem-project_reel_pipeline-status--stand--2026-04-08-",
+      "category": "project_reel_pipeline",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381123
+    },
+    "mem-project_reel_pipeline-projectstructuur": {
+      "id": "mem-project_reel_pipeline-projectstructuur",
+      "category": "project_reel_pipeline",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381123
+    },
+    "mem-project_reel_pipeline-workflow": {
+      "id": "mem-project_reel_pipeline-workflow",
+      "category": "project_reel_pipeline",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381123
+    },
+    "mem-project_reel_pipeline-volgende-stap--nog-te-doen-": {
+      "id": "mem-project_reel_pipeline-volgende-stap--nog-te-doen-",
+      "category": "project_reel_pipeline",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381123
+    },
+    "mem-project_remotion----": {
+      "id": "mem-project_remotion----",
+      "category": "project_remotion",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381127
+    },
+    "mem-project_remotion-opstarten": {
+      "id": "mem-project_remotion-opstarten",
+      "category": "project_remotion",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381127
+    },
+    "mem-project_remotion-ge-nstalleerde-skills": {
+      "id": "mem-project_remotion-ge-nstalleerde-skills",
+      "category": "project_remotion",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381127
+    },
+    "mem-reference_design_inspiratie----": {
+      "id": "mem-reference_design_inspiratie----",
+      "category": "reference_design_inspiratie",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381129
+    },
+    "mem-reference_design_inspiratie-bronnen": {
+      "id": "mem-reference_design_inspiratie-bronnen",
+      "category": "reference_design_inspiratie",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381129
+    },
+    "mem-reference_design_inspiratie-werkwijze": {
+      "id": "mem-reference_design_inspiratie-werkwijze",
+      "category": "reference_design_inspiratie",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381129
+    },
+    "mem-reference_promptfoo----": {
+      "id": "mem-reference_promptfoo----",
+      "category": "reference_promptfoo",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381130
+    },
+    "mem-reference_superset----": {
+      "id": "mem-reference_superset----",
+      "category": "reference_superset",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381144
+    },
+    "mem-reference_toolio----": {
+      "id": "mem-reference_toolio----",
+      "category": "reference_toolio",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776071381146
+    },
+    "insight-1776085984664-s66e": {
+      "id": "insight-1776085984664-s66e",
+      "category": "insights",
+      "confidence": 0.5,
+      "accessCount": 0,
+      "createdAt": 1776085984665
+    }
+  },
+  "edges": [
+    {
+      "sourceId": "mem-project_paperclip----",
+      "targetId": "mem-project_paperclip-of-handmatig-",
+      "type": "temporal",
+      "weight": 0.5
+    },
+    {
+      "sourceId": "mem-project_paperclip-of-handmatig-",
+      "targetId": "mem-project_paperclip-openstaand-probleem--ui-niet-b",
+      "type": "temporal",
+      "weight": 0.5
+    },
+    {
+      "sourceId": "mem-project_reel_pipeline----",
+      "targetId": "mem-project_reel_pipeline-status--stand--2026-04-08-",
+      "type": "temporal",
+      "weight": 0.5
+    },
+    {
+      "sourceId": "mem-project_reel_pipeline-status--stand--2026-04-08-",
+      "targetId": "mem-project_reel_pipeline-projectstructuur",
+      "type": "temporal",
+      "weight": 0.5
+    },
+    {
+      "sourceId": "mem-project_reel_pipeline-projectstructuur",
+      "targetId": "mem-project_reel_pipeline-workflow",
+      "type": "temporal",
+      "weight": 0.5
+    },
+    {
+      "sourceId": "mem-project_reel_pipeline-workflow",
+      "targetId": "mem-project_reel_pipeline-volgende-stap--nog-te-doen-",
+      "type": "temporal",
+      "weight": 0.5
+    },
+    {
+      "sourceId": "mem-project_remotion----",
+      "targetId": "mem-project_remotion-opstarten",
+      "type": "temporal",
+      "weight": 0.5
+    },
+    {
+      "sourceId": "mem-project_remotion-opstarten",
+      "targetId": "mem-project_remotion-ge-nstalleerde-skills",
+      "type": "temporal",
+      "weight": 0.5
+    },
+    {
+      "sourceId": "mem-reference_design_inspiratie----",
+      "targetId": "mem-reference_design_inspiratie-bronnen",
+      "type": "temporal",
+      "weight": 0.5
+    },
+    {
+      "sourceId": "mem-reference_design_inspiratie-bronnen",
+      "targetId": "mem-reference_design_inspiratie-werkwijze",
+      "type": "temporal",
+      "weight": 0.5
+    },
+    {
+      "sourceId": "mem-project_reel_pipeline-workflow",
+      "targetId": "mem-project_reel_pipeline-volgende-stap--nog-te-doen-",
+      "type": "similar",
+      "weight": 0.3055555555555556
+    }
+  ],
+  "pageRanks": {
+    "mem-MEMORY-memory-index": 0.026606180238890324,
+    "mem-feedback_webserver----": 0.026606180238890324,
+    "mem-project_aerts----": 0.026606180238890324,
+    "mem-project_notebooklm----": 0.026606180238890324,
+    "mem-project_paperclip----": 0.026606180238890324,
+    "mem-project_paperclip-of-handmatig-": 0.049221430051324365,
+    "mem-project_paperclip-openstaand-probleem--ui-niet-b": 0.06844440137033136,
+    "mem-project_posthog----": 0.026606180238890324,
+    "mem-project_reel_pipeline----": 0.026606180238890324,
+    "mem-project_reel_pipeline-status--stand--2026-04-08-": 0.049221430051324365,
+    "mem-project_reel_pipeline-projectstructuur": 0.06844440137033136,
+    "mem-project_reel_pipeline-workflow": 0.08478392550910367,
+    "mem-project_reel_pipeline-volgende-stap--nog-te-doen-": 0.09867240569869928,
+    "mem-project_remotion----": 0.026606180238890324,
+    "mem-project_remotion-opstarten": 0.049221430051324365,
+    "mem-project_remotion-ge-nstalleerde-skills": 0.06844440137033136,
+    "mem-reference_design_inspiratie----": 0.026606180238890324,
+    "mem-reference_design_inspiratie-bronnen": 0.049221430051324365,
+    "mem-reference_design_inspiratie-werkwijze": 0.06844440137033136,
+    "mem-reference_promptfoo----": 0.026606180238890324,
+    "mem-reference_superset----": 0.026606180238890324,
+    "mem-reference_toolio----": 0.026606180238890324,
+    "insight-1776085984664-s66e": 0.026606180238890324
+  }
+}

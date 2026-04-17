@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
   LayoutDashboard, Bot, Radio, ListTodo, FolderKanban,
-  DollarSign, Activity, Zap, Menu, X, GitMerge,
+  DollarSign, Activity, Zap, Menu, X, GitMerge, Search,
 } from 'lucide-react'
 
 const nav = [
@@ -16,6 +16,7 @@ const nav = [
   { href: '/projects', label: 'Projecten', icon: FolderKanban },
   { href: '/pipeline', label: 'Pipeline', icon: GitMerge },
   { href: '/costs', label: 'Kosten', icon: DollarSign },
+  { href: '/search', label: 'Log Search', icon: Search },
 ]
 
 function LiveClock() {

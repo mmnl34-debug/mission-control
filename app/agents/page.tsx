@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { format } from 'date-fns'
 import { AgentsClient } from '@/components/agents-client'
+import { AgentEfficiency } from '@/components/agent-efficiency'
 
 const SB_URL = 'https://logkkueavewqmaquuwfw.supabase.co'
 const SB_KEY = 'sb_publishable_nqPICLQDoaXGb8hshPIYYg_uv9GRuid'
@@ -157,6 +158,9 @@ export default async function AgentsPage() {
           ))}
         </div>
       </div>
+
+      {/* Agent efficiency rapport */}
+      <AgentEfficiency />
 
       {/* Session cards with replay — rendered client-side */}
       <AgentsClient sessions={sessions} />

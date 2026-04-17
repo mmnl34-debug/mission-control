@@ -6,6 +6,8 @@ import { ServiceHealth } from '@/components/service-health'
 import { PipelineMini } from '@/components/pipeline-mini'
 import { WeatherWidget } from '@/components/weather-widget'
 import { NewsWidget } from '@/components/news-widget'
+import { WeekOverview } from '@/components/week-overview'
+import { BudgetTracker } from '@/components/budget-tracker'
 import { ArrowUpRight, Bot, Radio, ListTodo, GitCommit, DollarSign, GitMerge } from 'lucide-react'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
@@ -318,7 +320,7 @@ export default async function DashboardPage() {
                 <span className="font-terminal text-xs" style={{ color: '#334155' }}>totaal vandaag</span>
               </div>
               {topModel ? (
-                <div className="flex items-center gap-2 p-2.5 rounded-lg" style={{ background: 'rgba(0,212,255,0.05)', border: '1px solid rgba(0,212,255,0.1)' }}>
+                <div className="flex items-center gap-2 p-2.5 rounded-lg mb-3" style={{ background: 'rgba(0,212,255,0.05)', border: '1px solid rgba(0,212,255,0.1)' }}>
                   <DollarSign size={12} style={{ color: '#00d4ff' }} />
                   <div className="min-w-0 flex-1">
                     <p className="font-terminal text-xs truncate" style={{ color: '#cbd5e1' }}>{topModel[0]}</p>
@@ -326,11 +328,15 @@ export default async function DashboardPage() {
                   </div>
                 </div>
               ) : (
-                <p className="font-terminal text-xs" style={{ color: '#334155' }}>Geen kosten vandaag</p>
+                <p className="font-terminal text-xs mb-3" style={{ color: '#334155' }}>Geen kosten vandaag</p>
               )}
+              <BudgetTracker todayTotal={todayTotal} />
             </div>
           </div>
         </div>
+
+        {/* Weekoverzicht */}
+        <WeekOverview />
 
         {/* Bento grid row 3 — Pipeline (verborgen op mobiel) */}
         <div className="hud-card mc-hide-mobile">

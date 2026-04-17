@@ -1,0 +1,30 @@
+wing: mission_control
+rooms:
+- name: public
+  description: Files from public/
+  keywords:
+  - public
+  - public
+- name: frontend
+  description: Files from components/
+  keywords:
+  - frontend
+  - components
+- name: lib
+  description: Files from lib/
+  keywords:
+  - lib
+  - lib
+- name: app
+  description: Files from app/
+  keywords:
+  - app
+  - app
+- name: costs
+  description: Files from costs/
+  keywords:
+  - costs
+  - costs
+- name: general
+  description: Files that don't fit other rooms
+  keywords: []

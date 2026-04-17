@@ -1,0 +1,20 @@
+{
+  "id": "session-1776071381013",
+  "startedAt": "2026-04-13T09:09:41.013Z",
+  "cwd": "/home/claudedev/projects/mission-control",
+  "context": {
+    "lastMatchedPatterns": [
+      "mem-reference_design_inspiratie-werkwijze",
+      "mem-project_reel_pipeline-volgende-stap--nog-te-doen-"
+    ]
+  },
+  "metrics": {
+    "edits": 3,
+    "commands": 0,
+    "tasks": 0,
+    "errors": 0
+  },
+  "updatedAt": "2026-04-13T13:12:01.658Z",
+  "endedAt": "2026-04-13T13:13:04.690Z",
+  "duration": 14603677
+}
