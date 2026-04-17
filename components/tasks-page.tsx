@@ -2,7 +2,19 @@
 
 import { useEffect, useState } from 'react'
 import { supabase, type Task } from '@/lib/supabase'
-import { Plus, X, ListTodo, CheckCircle2, Circle, Loader2 } from 'lucide-react'
+import { Plus, X, ListTodo, CheckCircle2, Circle, Loader2, Trash2 } from 'lucide-react'
+
+// Geeft de zondag terug die de huidige week begon (zondag = dag 0)
+function getWeekStart(): Date {
+  const d = new Date()
+  d.setHours(0, 0, 0, 0)
+  d.setDate(d.getDate() - d.getDay()) // terug naar zondag
+  return d
+}
+
+function isThisWeek(dateStr: string): boolean {
+  return new Date(dateStr) >= getWeekStart()
+}
 
 type Props = {
   initialTasks: Task[]
@@ -80,6 +92,20 @@ export function TasksPage({ initialTasks }: Props) {
         headers: SB_HEADERS,
       })
       setTasks(prev => prev.filter(t => t.id !== id))
+    } catch { /* ignore */ }
+  }
+
+  // Verwijder alle voltooide taken van vóór deze week uit Supabase
+  async function clearOldDone() {
+    const cutoff = getWeekStart().toISOString()
+    const oldDone = tasks.filter(t => t.status === 'done' && !isThisWeek(t.updated_at))
+    if (oldDone.length === 0) return
+    try {
+      await fetch(`${SB_URL}/rest/v1/tasks?status=eq.done&updated_at=lt.${cutoff}`, {
+        method: 'DELETE',
+        headers: SB_HEADERS,
+      })
+      setTasks(prev => prev.filter(t => !(t.status === 'done' && !isThisWeek(t.updated_at))))
     } catch { /* ignore */ }
   }
 
@@ -182,13 +208,23 @@ export function TasksPage({ initialTasks }: Props) {
       {/* Kanban columns */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {columns.map(col => {
-          const colTasks = tasks.filter(t => t.status === col.key)
+          const allColTasks = tasks.filter(t => t.status === col.key)
+
+          // Klaar-kolom: alleen taken van deze week tonen
+          const colTasks = col.key === 'done'
+            ? allColTasks.filter(t => isThisWeek(t.updated_at))
+            : allColTasks
+
+          const hiddenCount = col.key === 'done' ? allColTasks.length - colTasks.length : 0
+
           const Icon = col.icon
           return (
-            <div key={col.key} className="hud-card">
+            <div key={col.key} className="hud-card flex flex-col">
               <div className="hud-corners-bottom" />
+
+              {/* Kolom header */}
               <div
-                className="flex items-center justify-between px-4 py-3"
+                className="flex items-center justify-between px-4 py-3 shrink-0"
                 style={{ borderBottom: `1px solid ${col.color}30` }}
               >
                 <div className="flex items-center gap-2">
@@ -202,12 +238,39 @@ export function TasksPage({ initialTasks }: Props) {
                   <span className="font-terminal text-xs font-medium tracking-wider uppercase" style={{ color: col.color }}>
                     {col.label}
                   </span>
+                  {col.key === 'done' && (
+                    <span className="font-terminal" style={{ fontSize: 9, color: '#334155' }}>
+                      · deze week
+                    </span>
+                  )}
                 </div>
-                <span className="font-terminal text-xs" style={{ color: '#334155' }}>
-                  {colTasks.length}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="font-terminal text-xs" style={{ color: '#334155' }}>
+                    {colTasks.length}
+                  </span>
+                  {/* Opruimknop — alleen in done kolom als er oude taken zijn */}
+                  {col.key === 'done' && hiddenCount > 0 && (
+                    <button
+                      onClick={clearOldDone}
+                      title={`${hiddenCount} oude voltooide taken verwijderen`}
+                      className="flex items-center gap-1 font-terminal px-1.5 py-0.5 rounded"
+                      style={{
+                        fontSize: 9, color: '#475569', background: 'rgba(239,68,68,0.08)',
+                        border: '1px solid rgba(239,68,68,0.15)', cursor: 'pointer',
+                      }}
+                    >
+                      <Trash2 size={9} style={{ color: '#ef4444' }} />
+                      Wis {hiddenCount} oud
+                    </button>
+                  )}
+                </div>
               </div>
-              <div className="p-3 space-y-2 min-h-32">
+
+              {/* Taakenlijst — max-height op done kolom */}
+              <div
+                className="p-3 space-y-2 min-h-32"
+                style={col.key === 'done' ? { maxHeight: 340, overflowY: 'auto' } : {}}
+              >
                 {colTasks.map(task => (
                   <div
                     key={task.id}
@@ -247,12 +310,25 @@ export function TasksPage({ initialTasks }: Props) {
                     </button>
                   </div>
                 ))}
+
                 {colTasks.length === 0 && (
                   <div className="flex items-center justify-center py-6">
-                    <p className="font-terminal text-xs" style={{ color: '#1e293b' }}>Geen taken</p>
+                    <p className="font-terminal text-xs" style={{ color: '#1e293b' }}>
+                      {col.key === 'done' ? 'Niets voltooid deze week' : 'Geen taken'}
+                    </p>
                   </div>
                 )}
               </div>
+
+              {/* Verborgen taken melding onderaan done-kolom */}
+              {col.key === 'done' && hiddenCount > 0 && (
+                <div
+                  className="px-4 py-2 shrink-0 font-terminal"
+                  style={{ fontSize: 10, color: '#334155', borderTop: '1px solid rgba(0,212,255,0.05)' }}
+                >
+                  {hiddenCount} taken van vorige week{hiddenCount === 1 ? '' : 's'} verborgen
+                </div>
+              )}
             </div>
           )
         })}
