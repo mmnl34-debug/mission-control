@@ -30,7 +30,7 @@ const SB_HEADERS: Record<string, string> = {
 }
 
 const columns = [
-  { key: 'todo' as const, label: 'TODO', color: '#475569', icon: Circle },
+  { key: 'todo' as const, label: 'TODO', color: '#ef4444', icon: Circle },
   { key: 'in_progress' as const, label: 'BEZIG', color: '#00d4ff', icon: Loader2 },
   { key: 'done' as const, label: 'KLAAR', color: '#10b981', icon: CheckCircle2 },
 ]
