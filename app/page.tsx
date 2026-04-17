@@ -4,7 +4,7 @@ import { type AgentSession, type AgentLog, type CostRecord, type Project, type T
 import { LiveStats } from '@/components/realtime/live-stats'
 import { ServiceHealth } from '@/components/service-health'
 import { PipelineMini } from '@/components/pipeline-mini'
-import { ArrowUpRight, Bot, Radio, ListTodo, GitCommit, DollarSign } from 'lucide-react'
+import { ArrowUpRight, Bot, Radio, ListTodo, GitCommit, DollarSign, GitMerge } from 'lucide-react'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import { nl } from 'date-fns/locale'
@@ -112,8 +112,8 @@ export default async function DashboardPage() {
       <div className="orb-cyan" style={{ bottom: '-150px', left: '-100px' }} />
 
       <div className="relative z-10 p-4 space-y-3">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+        {/* Header — verborgen op mobiel (topbar doet dit al) */}
+        <div className="hidden lg:flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-1">
               <h1
@@ -159,7 +159,7 @@ export default async function DashboardPage() {
           <div className="hud-card">
             <div className="hud-corners-bottom" />
             <BentoHeader title="Agents" href="/agents" badge={`${activeSessions.length} active`} />
-            <div className="p-3 space-y-2">
+            <div className="p-3 space-y-2 bento-items-mobile">
               {sessions.slice(0, 4).map(session => {
                 const colors: Record<string, string> = { active: '#00d4ff', idle: '#f59e0b', completed: '#4f52a0', error: '#ef4444' }
                 const c = colors[session.status] ?? '#64748b'
@@ -186,7 +186,7 @@ export default async function DashboardPage() {
           <div className="hud-card">
             <div className="hud-corners-bottom" />
             <BentoHeader title="Live Feed" href="/feed" badge={`${logs.length} events`} />
-            <div className="p-3 space-y-2">
+            <div className="p-3 space-y-2 bento-items-mobile">
               {logs.slice(0, 4).map(log => {
                 const eventColors: Record<string, string> = {
                   task_start: '#00d4ff', task_complete: '#10b981', tool_use: '#f59e0b',
@@ -214,8 +214,8 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          {/* Git activity card */}
-          <div className="hud-card">
+          {/* Git activity card — verborgen op mobiel */}
+          <div className="hud-card mc-hide-mobile">
             <div className="hud-corners-bottom" />
             <BentoHeader title="Git Activity" href="https://github.com/mmnl34-debug/mission-control" badge={`${commits.length} commits`} />
             <div className="p-3 space-y-2.5">
@@ -322,13 +322,43 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Bento grid row 3 — Pipeline */}
-        <div className="hud-card">
+        {/* Bento grid row 3 — Pipeline (verborgen op mobiel) */}
+        <div className="hud-card mc-hide-mobile">
           <div className="hud-corners-bottom" />
           <BentoHeader title="Pipeline" href="/pipeline" badge={`${activeSessions.length} actief`} />
           <div className="p-3">
             <PipelineMini />
           </div>
+        </div>
+
+        {/* Mobile-only snelle links naar pipeline + git */}
+        <div className="flex gap-2 lg:hidden">
+          <Link
+            href="/pipeline"
+            className="flex-1 flex items-center justify-center gap-2 font-terminal text-xs py-2.5 rounded-lg"
+            style={{
+              background: 'rgba(0,212,255,0.05)',
+              border: '1px solid rgba(0,212,255,0.12)',
+              color: '#00d4ff',
+            }}
+          >
+            <GitMerge size={13} />
+            Pipeline
+          </Link>
+          <a
+            href="https://github.com/mmnl34-debug/mission-control"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 flex items-center justify-center gap-2 font-terminal text-xs py-2.5 rounded-lg"
+            style={{
+              background: 'rgba(79,82,160,0.08)',
+              border: '1px solid rgba(79,82,160,0.2)',
+              color: '#94a3b8',
+            }}
+          >
+            <GitCommit size={13} />
+            GitHub
+          </a>
         </div>
       </div>
     </div>

@@ -64,7 +64,7 @@ export async function ServiceHealth() {
             boxShadow: `0 0 4px ${dotColor(svc.status)}`,
           }} />
           <span style={{ color: '#94a3b8' }}>{svc.name}</span>
-          <span style={{ color: '#475569' }}>{svc.latencyMs}ms</span>
+          <span className="svc-latency" style={{ color: '#475569' }}>{svc.latencyMs}ms</span>
         </div>
       ))}
     </div>

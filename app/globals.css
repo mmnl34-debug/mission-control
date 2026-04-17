@@ -213,3 +213,36 @@ body {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* ─── Stat cards ─────────────────────────────────────────── */
+.stat-card       { padding: 20px; }
+.stat-card-inner { margin-bottom: 16px; }
+.stat-value      { font-size: 1.875rem; line-height: 1; }
+.stat-label      { display: block; }
+.stat-icon       { width: 32px; height: 32px; }
+
+@media (max-width: 1023px) {
+  .stat-card       { padding: 12px 14px; }
+  .stat-card-inner { margin-bottom: 8px; }
+  .stat-value      { font-size: 1.375rem; }
+  .stat-label      { font-size: 9px; }
+  .stat-icon       { width: 26px; height: 26px; }
+}
+
+/* ─── Service health ─────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .svc-latency { display: none; }
+}
+
+/* ─── Dashboard mobile tweaks ────────────────────────────── */
+@media (max-width: 1023px) {
+  /* Hide non-essential dashboard sections on mobile */
+  .mc-hide-mobile { display: none !important; }
+
+  /* Compact bento headers */
+  .bento-items-mobile .flex.items-start.gap-2:nth-child(n+4),
+  .bento-items-mobile .flex.items-center.gap-2\\.5:nth-child(n+4),
+  .bento-items-mobile .flex.items-center.gap-2:nth-child(n+4) {
+    display: none;
+  }
+}

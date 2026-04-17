@@ -47,8 +47,12 @@ function SidebarContent({ onClose, isMobile }: { onClose?: () => void; isMobile?
         background: 'linear-gradient(90deg, transparent, rgba(0,212,255,0.4), rgba(79,82,160,0.3), transparent)',
       }} />
 
-      {/* Logo */}
-      <div style={{ padding: '20px 16px 16px', borderBottom: '1px solid rgba(0,212,255,0.08)', display: 'flex', alignItems: 'center', gap: 12 }}>
+      {/* Logo area */}
+      <div style={{
+        padding: '18px 16px',
+        borderBottom: '1px solid rgba(0,212,255,0.08)',
+        display: 'flex', alignItems: 'center', gap: 12,
+      }}>
         <div style={{
           width: 32, height: 32, borderRadius: 8, flexShrink: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -61,43 +65,66 @@ function SidebarContent({ onClose, isMobile }: { onClose?: () => void; isMobile?
           <div style={{ fontSize: 13, fontWeight: 700, color: 'white', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Mission</div>
           <div className="font-terminal" style={{ fontSize: 11, color: '#00d4ff', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Control</div>
         </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#4ade80', boxShadow: '0 0 6px #4ade80', display: 'inline-block' }} />
-          <span className="font-terminal" style={{ fontSize: 11, color: '#64748b' }}>live</span>
-        </div>
+
+        {/* Live dot — desktop only */}
+        {!isMobile && (
+          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#4ade80', boxShadow: '0 0 6px #4ade80', display: 'inline-block' }} />
+            <span className="font-terminal" style={{ fontSize: 11, color: '#64748b' }}>live</span>
+          </div>
+        )}
+
+        {/* Close button — mobile only, top-right */}
         {isMobile && onClose && (
-          <button onClick={onClose} style={{ marginLeft: 8, color: '#64748b', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }} aria-label="Sluit">
-            <X size={16} />
+          <button
+            onClick={onClose}
+            aria-label="Sluit menu"
+            style={{
+              marginLeft: 'auto',
+              width: 32, height: 32, borderRadius: 6,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: 'rgba(0,212,255,0.06)',
+              border: '1px solid rgba(0,212,255,0.15)',
+              color: '#00d4ff', cursor: 'pointer',
+              flexShrink: 0,
+            }}
+          >
+            <X size={15} />
           </button>
         )}
       </div>
 
       {/* Nav */}
-      <nav style={{ flex: 1, padding: '16px 8px', display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <nav style={{ flex: 1, padding: '12px 8px', display: 'flex', flexDirection: 'column', gap: 1 }}>
         {nav.map(({ href, label, icon: Icon }) => {
           const active = pathname === href
           return (
             <Link key={href} href={href} style={{
               display: 'flex', alignItems: 'center', gap: 12,
-              padding: active ? '10px 12px 10px 10px' : '10px 12px',
+              padding: '10px 12px',
               borderRadius: 8, fontSize: 14, textDecoration: 'none', position: 'relative',
-              background: active ? 'rgba(0,212,255,0.1)' : 'transparent',
+              background: active ? 'rgba(0,212,255,0.13)' : 'transparent',
               color: active ? '#00d4ff' : '#64748b',
-              borderLeft: active ? '2px solid #00d4ff' : '2px solid transparent',
-              boxShadow: active ? '0 0 12px rgba(0,212,255,0.1)' : 'none',
-              transition: 'all 0.15s ease',
+              transition: 'background 0.15s ease, color 0.15s ease',
             }}>
-              <Icon size={15} />
-              {label}
-              {active && <span style={{ marginLeft: 'auto', width: 4, height: 4, borderRadius: '50%', background: '#00d4ff', boxShadow: '0 0 6px #00d4ff' }} />}
+              <Icon size={15} strokeWidth={active ? 2 : 1.5} />
+              <span style={{ fontWeight: active ? 500 : 400 }}>{label}</span>
+              {active && (
+                <span style={{
+                  marginLeft: 'auto',
+                  width: 5, height: 5, borderRadius: '50%',
+                  background: '#00d4ff',
+                  boxShadow: '0 0 6px #00d4ff',
+                }} />
+              )}
             </Link>
           )
         })}
       </nav>
 
       {/* System status */}
-      <div style={{ margin: '0 8px 8px', padding: '12px', borderRadius: 8, background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)' }}>
-        <div className="font-terminal" style={{ fontSize: 10, letterSpacing: '0.12em', color: '#334155', textTransform: 'uppercase', marginBottom: 8 }}>System Status</div>
+      <div style={{ margin: '0 8px 8px', padding: '10px 12px', borderRadius: 8, background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)' }}>
+        <div className="font-terminal" style={{ fontSize: 10, letterSpacing: '0.12em', color: '#334155', textTransform: 'uppercase', marginBottom: 6 }}>System Status</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 6px #10b981', flexShrink: 0 }} />
           <span className="font-terminal" style={{ fontSize: 11, color: '#10b981' }}>All systems operational</span>
@@ -105,7 +132,7 @@ function SidebarContent({ onClose, isMobile }: { onClose?: () => void; isMobile?
       </div>
 
       {/* Clock */}
-      <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(0,212,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ padding: '10px 16px', borderTop: '1px solid rgba(0,212,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <Activity size={12} style={{ color: '#00d4ff' }} />
           <span className="font-terminal" style={{ fontSize: 11, color: '#334155' }}>claude-sonnet-4-6</span>
@@ -124,14 +151,14 @@ export function Sidebar() {
 
   return (
     <>
-      {/* CSS: desktop sidebar zichtbaar, mobile hamburger verborgen op ≥1024px */}
       <style>{`
         .mc-sidebar-desktop { display: flex; height: 100%; width: 240px; flex-shrink: 0; }
-        .mc-hamburger       { display: none; }
+        .mc-topbar           { display: none; }
+
         @media (max-width: 1023px) {
           .mc-sidebar-desktop { display: none; }
-          .mc-hamburger       { display: flex; }
-          #main-content       { padding-top: 64px; }
+          .mc-topbar          { display: flex; }
+          #main-content       { padding-top: 56px; }
         }
       `}</style>
 
@@ -140,23 +167,56 @@ export function Sidebar() {
         <SidebarContent />
       </div>
 
-      {/* Mobile hamburger */}
-      <button
-        className="mc-hamburger"
-        onClick={() => setMobileOpen(true)}
-        aria-label="Open menu"
+      {/* Mobile top bar */}
+      <div
+        className="mc-topbar"
         style={{
-          position: 'fixed', top: 14, left: 14, zIndex: 60,
-          width: 40, height: 40, borderRadius: 8,
-          background: 'rgba(7,7,15,0.9)',
-          border: '1px solid rgba(0,212,255,0.2)',
-          alignItems: 'center', justifyContent: 'center',
-          color: '#00d4ff', cursor: 'pointer',
-          boxShadow: '0 0 12px rgba(0,212,255,0.1)',
+          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 60,
+          height: 56,
+          background: 'rgba(7,7,15,0.96)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(0,212,255,0.1)',
+          alignItems: 'center',
+          padding: '0 16px',
+          gap: 12,
         }}
       >
-        <Menu size={18} />
-      </button>
+        {/* Hamburger */}
+        <button
+          onClick={() => setMobileOpen(true)}
+          aria-label="Open menu"
+          style={{
+            width: 36, height: 36, borderRadius: 8, flexShrink: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(0,212,255,0.06)',
+            border: '1px solid rgba(0,212,255,0.18)',
+            color: '#00d4ff', cursor: 'pointer',
+          }}
+        >
+          <Menu size={16} />
+        </button>
+
+        {/* Logo centered */}
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+          <div style={{
+            width: 24, height: 24, borderRadius: 6, flexShrink: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'linear-gradient(135deg, #00d4ff, #4f52a0)',
+            boxShadow: '0 0 10px rgba(0,212,255,0.4)',
+          }}>
+            <Zap size={11} color="white" />
+          </div>
+          <span style={{ fontSize: 12, fontWeight: 700, color: 'white', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+            Mission Control
+          </span>
+        </div>
+
+        {/* Live dot right */}
+        <div style={{ width: 36, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}>
+          <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#4ade80', boxShadow: '0 0 8px #4ade80', display: 'inline-block' }} />
+        </div>
+      </div>
 
       {/* Mobile backdrop */}
       {mobileOpen && (
@@ -164,7 +224,7 @@ export function Sidebar() {
           onClick={() => setMobileOpen(false)}
           style={{
             position: 'fixed', inset: 0, zIndex: 49,
-            background: 'rgba(0,0,0,0.65)',
+            background: 'rgba(0,0,0,0.6)',
             backdropFilter: 'blur(4px)',
           }}
         />
@@ -175,7 +235,7 @@ export function Sidebar() {
         position: 'fixed', top: 0, left: 0, bottom: 0,
         width: 240, zIndex: 50,
         transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)',
-        transition: 'transform 0.28s cubic-bezier(0.4,0,0.2,1)',
+        transition: 'transform 0.25s cubic-bezier(0.4,0,0.2,1)',
       }}>
         <SidebarContent onClose={() => setMobileOpen(false)} isMobile />
       </div>

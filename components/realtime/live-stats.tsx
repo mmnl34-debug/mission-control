@@ -25,7 +25,7 @@ function StatCard({
 }) {
   return (
     <div
-      className="glass-card relative overflow-hidden flex flex-col p-5 transition-all"
+      className="glass-card stat-card relative overflow-hidden flex flex-col transition-all"
       style={{
         borderTop: `1px solid ${topColor}`,
         boxShadow: `0 0 20px ${topColor}18, inset 0 1px 0 ${topColor}30`,
@@ -37,20 +37,20 @@ function StatCard({
         style={{ background: `linear-gradient(90deg, transparent, ${topColor}, transparent)` }}
       />
 
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-xs tracking-widest uppercase font-terminal" style={{ color: '#334155' }}>
+      <div className="flex items-center justify-between stat-card-inner">
+        <span className="text-xs tracking-widest uppercase font-terminal stat-label" style={{ color: '#334155' }}>
           {label}
         </span>
         <div
-          className="w-8 h-8 rounded-lg flex items-center justify-center"
+          className="stat-icon rounded-lg flex items-center justify-center flex-shrink-0"
           style={{ background: `${topColor}18`, border: `1px solid ${topColor}30` }}
         >
-          <Icon size={14} style={{ color: topColor }} />
+          <Icon size={13} style={{ color: topColor }} />
         </div>
       </div>
 
       <div
-        className={`font-terminal text-3xl font-bold transition-all duration-300 ${changed ? 'counter-changed' : 'glow-text'}`}
+        className={`font-terminal font-bold transition-all duration-300 stat-value ${changed ? 'counter-changed' : 'glow-text'}`}
         style={{ color: '#f1f5f9' }}
       >
         {value}
