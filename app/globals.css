@@ -234,6 +234,9 @@ body {
   .svc-latency { display: none; }
 }
 
+/* ─── News widget hover ──────────────────────────────────── */
+.news-row:hover span { color: #cbd5e1 !important; }
+
 /* ─── Dashboard mobile tweaks ────────────────────────────── */
 @media (max-width: 1023px) {
   /* Hide non-essential dashboard sections on mobile */

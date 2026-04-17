@@ -4,6 +4,8 @@ import { type AgentSession, type AgentLog, type CostRecord, type Project, type T
 import { LiveStats } from '@/components/realtime/live-stats'
 import { ServiceHealth } from '@/components/service-health'
 import { PipelineMini } from '@/components/pipeline-mini'
+import { WeatherWidget } from '@/components/weather-widget'
+import { NewsWidget } from '@/components/news-widget'
 import { ArrowUpRight, Bot, Radio, ListTodo, GitCommit, DollarSign, GitMerge } from 'lucide-react'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
@@ -152,6 +154,14 @@ export default async function DashboardPage() {
           initialCosts={costs}
           initialProjects={[]}
         />
+
+        {/* Weer + Nieuws rij */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          <WeatherWidget />
+          <div className="lg:col-span-2">
+            <NewsWidget />
+          </div>
+        </div>
 
         {/* Bento grid row 1 */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">

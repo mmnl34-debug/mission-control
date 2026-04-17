@@ -2,6 +2,8 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
+import { fetchWeather, weatherEmoji } from '@/lib/weather'
+import { fetchHNNews, fetchNOSNews } from '@/lib/news'
 
 const SB_URL = 'https://logkkueavewqmaquuwfw.supabase.co'
 const SB_KEY = 'sb_publishable_nqPICLQDoaXGb8hshPIYYg_uv9GRuid'
@@ -58,6 +60,28 @@ ${todo.slice(0, 5).map((t: { title: string }) => `  - [TODO] ${t.title}`).join('
   }
 }
 
+async function getWeatherContext(): Promise<string> {
+  const w = await fetchWeather('Eindhoven')
+  if (!w) return 'Weerdata niet beschikbaar.'
+  const emoji = weatherEmoji(w.code)
+  return `### Weer Eindhoven
+${emoji} ${w.temp}°C, voelt als ${w.feelsLike}°C
+Omschrijving: ${w.description}
+Wind: ${w.windSpeed} km/u | Luchtvochtigheid: ${w.humidity}%`
+}
+
+async function getNewsContext(): Promise<string> {
+  const [hn, nos] = await Promise.all([fetchHNNews(5), fetchNOSNews(5)])
+  const hnText = hn.map(n => `  - ${n.title}`).join('\n') || '  - Geen nieuws beschikbaar'
+  const nosText = nos.map(n => `  - ${n.title}`).join('\n') || '  - Geen nieuws beschikbaar'
+  return `### Nieuws
+#### AI & Tech (Hacker News)
+${hnText}
+
+#### Nederland (NOS)
+${nosText}`
+}
+
 export async function POST(req: NextRequest) {
   const { transcript } = await req.json()
 
@@ -65,7 +89,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Geen transcript' }, { status: 400 })
   }
 
-  const context = await getDashboardContext()
+  // Alleen weer/nieuws ophalen als de vraag er waarschijnlijk over gaat
+  const lc = transcript.toLowerCase()
+  const wantsWeather = lc.includes('weer') || lc.includes('temp') || lc.includes('graden') || lc.includes('regen') || lc.includes('wind')
+  const wantsNews = lc.includes('nieuws') || lc.includes('news') || lc.includes('headline') || lc.includes('nos') || lc.includes('hacker')
+
+  const [context, weatherCtx, newsCtx] = await Promise.all([
+    getDashboardContext(),
+    wantsWeather ? getWeatherContext() : Promise.resolve(''),
+    wantsNews ? getNewsContext() : Promise.resolve(''),
+  ])
+
+  const extraContext = [weatherCtx, newsCtx].filter(Boolean).join('\n\n')
 
   const message = await client.messages.create({
     model: 'claude-haiku-4-5-20251001',
@@ -78,7 +113,7 @@ Je hebt toegang tot live dashboard data hieronder. Gebruik deze data om vragen t
 
 Zeg nooit "Ik ben een taalmodel" of vergelijkbare disclaimers. Gewoon antwoorden.
 
-${context}`,
+${context}${extraContext ? '\n\n' + extraContext : ''}`,
     messages: [{ role: 'user', content: transcript }],
   })
 
