@@ -17,6 +17,10 @@ const statusConfig = {
 interface ReplayState {
   sessionId: string
   agentName: string
+  project?: string | null
+  model?: string
+  startedAt?: string
+  lastSeenAt?: string
 }
 
 interface Props {
@@ -36,6 +40,12 @@ export function AgentsClient({ sessions }: Props) {
           sessionId={replay.sessionId}
           agentName={replay.agentName}
           onClose={() => setReplay(null)}
+          sessionMeta={{
+            project: replay.project,
+            model: replay.model,
+            startedAt: replay.startedAt,
+            lastSeenAt: replay.lastSeenAt,
+          }}
         />
       )}
 
@@ -96,7 +106,14 @@ export function AgentsClient({ sessions }: Props) {
                       </span>
                     </div>
                     <button
-                      onClick={() => setReplay({ sessionId: session.session_id, agentName: session.agent_name })}
+                      onClick={() => setReplay({
+                        sessionId: session.session_id,
+                        agentName: session.agent_name,
+                        project: session.project,
+                        model: session.model,
+                        startedAt: session.started_at,
+                        lastSeenAt: session.last_seen_at,
+                      })}
                       className="font-terminal text-xs px-2 py-1 rounded"
                       style={{
                         background: 'rgba(0,212,255,0.08)',
@@ -148,9 +165,14 @@ export function AgentsClient({ sessions }: Props) {
                     {formatDistanceToNow(new Date(session.last_seen_at), { locale: nl, addSuffix: true })}
                   </span>
                   <button
-                    onClick={() =>
-                      setReplay({ sessionId: session.session_id, agentName: session.agent_name })
-                    }
+                    onClick={() => setReplay({
+                      sessionId: session.session_id,
+                      agentName: session.agent_name,
+                      project: session.project,
+                      model: session.model,
+                      startedAt: session.started_at,
+                      lastSeenAt: session.last_seen_at,
+                    })}
                     className="font-terminal text-xs px-2 py-1 rounded shrink-0"
                     style={{
                       background: 'rgba(0,212,255,0.06)',
