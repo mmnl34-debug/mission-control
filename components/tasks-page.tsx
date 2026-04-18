@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { supabase, type Task } from '@/lib/supabase'
-import { Plus, X, ListTodo, CheckCircle2, Circle, Loader2, Trash2 } from 'lucide-react'
+import { Plus, X, ListTodo, CheckCircle2, Circle, Loader2, Trash2, ChevronRight, ChevronDown, Folder } from 'lucide-react'
 
 // Geeft de zondag terug die de huidige week begon (zondag = dag 0)
 function getWeekStart(): Date {
@@ -47,6 +47,16 @@ export function TasksPage({ initialTasks }: Props) {
   const [title, setTitle] = useState('')
   const [project, setProject] = useState('')
   const [priority, setPriority] = useState(5)
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set())
+
+  function toggleFolder(key: string) {
+    setExpandedFolders(prev => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }
 
   useEffect(() => {
     const channel = supabase
@@ -266,50 +276,96 @@ export function TasksPage({ initialTasks }: Props) {
                 </div>
               </div>
 
-              {/* Taakenlijst — max-height op done kolom */}
+              {/* Taakenlijst gegroepeerd per project — max-height op done kolom */}
               <div
-                className="p-3 space-y-2 min-h-32"
+                className="p-3 space-y-1.5 min-h-32"
                 style={col.key === 'done' ? { maxHeight: 340, overflowY: 'auto' } : {}}
               >
-                {colTasks.map(task => (
-                  <div
-                    key={task.id}
-                    className="flex items-start gap-2 p-2.5 rounded-lg cursor-pointer transition-all group"
-                    style={{
-                      background: 'rgba(255,255,255,0.02)',
-                      border: '1px solid rgba(255,255,255,0.05)',
-                    }}
-                    onClick={() => toggleStatus(task)}
-                  >
-                    <span
-                      className="w-2 h-2 rounded-full shrink-0 mt-1"
-                      style={{ background: col.color, boxShadow: `0 0 4px ${col.color}` }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className="font-terminal text-xs leading-relaxed"
-                        style={{
-                          color: col.key === 'done' ? '#475569' : '#cbd5e1',
-                          textDecoration: col.key === 'done' ? 'line-through' : 'none',
-                        }}
-                      >
-                        {task.title}
-                      </p>
-                      {task.project && (
-                        <p className="font-terminal mt-0.5" style={{ color: '#334155', fontSize: '10px' }}>
-                          {task.project}
-                        </p>
-                      )}
-                    </div>
-                    <button
-                      onClick={e => { e.stopPropagation(); deleteTask(task.id) }}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-                      style={{ color: '#ef4444' }}
-                    >
-                      <X size={12} />
-                    </button>
-                  </div>
-                ))}
+                {(() => {
+                  const grouped = new Map<string, Task[]>()
+                  for (const t of colTasks) {
+                    const k = t.project || 'Overig'
+                    const arr = grouped.get(k) ?? []
+                    arr.push(t)
+                    grouped.set(k, arr)
+                  }
+                  const folders = [...grouped.entries()].sort((a, b) => a[0].localeCompare(b[0]))
+
+                  return folders.map(([projName, items]) => {
+                    const folderKey = `${col.key}:${projName}`
+                    const isOpen = expandedFolders.has(folderKey)
+                    return (
+                      <div key={projName}>
+                        <button
+                          onClick={() => toggleFolder(folderKey)}
+                          className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all"
+                          style={{
+                            background: isOpen ? `${col.color}08` : 'rgba(255,255,255,0.02)',
+                            border: `1px solid ${isOpen ? col.color + '25' : 'rgba(255,255,255,0.05)'}`,
+                          }}
+                        >
+                          {isOpen
+                            ? <ChevronDown size={11} style={{ color: col.color }} />
+                            : <ChevronRight size={11} style={{ color: col.color }} />}
+                          <Folder size={11} style={{ color: col.color, opacity: 0.75 }} />
+                          <span
+                            className="font-terminal text-xs flex-1 text-left truncate"
+                            style={{ color: '#cbd5e1' }}
+                          >
+                            {projName}
+                          </span>
+                          <span
+                            className="font-terminal text-xs px-1.5 rounded"
+                            style={{
+                              color: col.color,
+                              background: `${col.color}15`,
+                              fontSize: 10,
+                            }}
+                          >
+                            {items.length}
+                          </span>
+                        </button>
+
+                        {isOpen && (
+                          <div className="mt-1 ml-2 pl-3 space-y-1.5" style={{ borderLeft: `1px solid ${col.color}20` }}>
+                            {items.map(task => (
+                              <div
+                                key={task.id}
+                                className="flex items-start gap-2 p-2 rounded-lg cursor-pointer transition-all group"
+                                style={{
+                                  background: 'rgba(255,255,255,0.02)',
+                                  border: '1px solid rgba(255,255,255,0.05)',
+                                }}
+                                onClick={() => toggleStatus(task)}
+                              >
+                                <span
+                                  className="w-2 h-2 rounded-full shrink-0 mt-1"
+                                  style={{ background: col.color, boxShadow: `0 0 4px ${col.color}` }}
+                                />
+                                <p
+                                  className="font-terminal text-xs leading-relaxed flex-1 min-w-0"
+                                  style={{
+                                    color: col.key === 'done' ? '#475569' : '#cbd5e1',
+                                    textDecoration: col.key === 'done' ? 'line-through' : 'none',
+                                  }}
+                                >
+                                  {task.title}
+                                </p>
+                                <button
+                                  onClick={e => { e.stopPropagation(); deleteTask(task.id) }}
+                                  className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                                  style={{ color: '#ef4444' }}
+                                >
+                                  <X size={12} />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })
+                })()}
 
                 {colTasks.length === 0 && (
                   <div className="flex items-center justify-center py-6">
