@@ -65,3 +65,27 @@ export type Task = {
   created_at: string
   updated_at: string
 }
+
+export type Note = {
+  id: string
+  title: string | null
+  content: string
+  project: string | null
+  processed: boolean
+  processed_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type PlannerEvent = {
+  id: string
+  title: string
+  description: string | null
+  event_date: string
+  event_time: string | null
+  project: string | null
+  status: 'planned' | 'done' | 'cancelled'
+  source: string | null
+  created_at: string
+  updated_at: string
+}

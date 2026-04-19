@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import { FolderKanban, Circle, CheckCircle2, PauseCircle, Archive } from 'lucide-react'
 import { format } from 'date-fns'
 import { nl } from 'date-fns/locale'
+import { NewProjectButton } from '@/components/new-project-button'
 
 const SB_URL = 'https://logkkueavewqmaquuwfw.supabase.co'
 const SB_KEY = 'sb_publishable_nqPICLQDoaXGb8hshPIYYg_uv9GRuid'
@@ -38,7 +39,7 @@ export default async function ProjectsPage() {
 
       <div className="relative z-10 p-6 space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-2xl font-bold tracking-widest uppercase font-terminal glow-text" style={{ color: '#f1f5f9', letterSpacing: '0.2em' }}>
               Projecten
@@ -47,6 +48,7 @@ export default async function ProjectsPage() {
               {projects.length} projecten totaal
             </p>
           </div>
+          <NewProjectButton />
         </div>
 
         {/* Summary pills */}

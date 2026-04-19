@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import {
   LayoutDashboard, Bot, Radio, ListTodo, FolderKanban,
   DollarSign, Activity, Zap, Menu, X, GitMerge, Search,
+  StickyNote, CalendarDays,
 } from 'lucide-react'
 
 const nav = [
@@ -13,6 +14,8 @@ const nav = [
   { href: '/agents', label: 'Agents', icon: Bot },
   { href: '/feed', label: 'Live Feed', icon: Radio },
   { href: '/tasks', label: 'Taken', icon: ListTodo },
+  { href: '/notes', label: 'Notities', icon: StickyNote },
+  { href: '/planner', label: 'Planner', icon: CalendarDays },
   { href: '/projects', label: 'Projecten', icon: FolderKanban },
   { href: '/pipeline', label: 'Pipeline', icon: GitMerge },
   { href: '/costs', label: 'Kosten', icon: DollarSign },
