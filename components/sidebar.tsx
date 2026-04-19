@@ -162,7 +162,7 @@ export function Sidebar() {
         @media (max-width: 1023px) {
           .mc-sidebar-desktop { display: none; }
           .mc-topbar          { display: flex; }
-          #main-content       { padding-top: 56px; }
+          #main-content       { padding-top: calc(64px + env(safe-area-inset-top, 0px)); }
         }
       `}</style>
 
@@ -176,13 +176,16 @@ export function Sidebar() {
         className="mc-topbar"
         style={{
           position: 'fixed', top: 0, left: 0, right: 0, zIndex: 60,
-          height: 56,
+          height: 'calc(56px + env(safe-area-inset-top, 0px))',
           background: 'rgba(7,7,15,0.96)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
           borderBottom: '1px solid rgba(0,212,255,0.1)',
           alignItems: 'center',
-          padding: '0 16px',
+          paddingTop: 'env(safe-area-inset-top, 0px)',
+          paddingBottom: 0,
+          paddingLeft: 16,
+          paddingRight: 16,
           gap: 12,
         }}
       >
