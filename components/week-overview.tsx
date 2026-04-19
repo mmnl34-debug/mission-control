@@ -23,7 +23,7 @@ export async function WeekOverview() {
   const weekStart = getWeekStart()
 
   const [costs, tasks, sessions] = await Promise.all([
-    sbFetch(`cost_tracking?select=cost_usd,input_tokens,output_tokens&created_at=gte.${weekStart}`),
+    sbFetch(`cost_tracking?select=cost_usd,input_tokens,output_tokens&recorded_at=gte.${weekStart}`),
     sbFetch(`tasks?select=status,updated_at&updated_at=gte.${weekStart}`),
     sbFetch(`agent_sessions?select=id,started_at&started_at=gte.${weekStart}`),
   ])
