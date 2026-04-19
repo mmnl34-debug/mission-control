@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 
-import { type AgentSession, type AgentLog, type CostRecord, type Project, type Task } from '@/lib/supabase'
+import { type AgentSession, type AgentLog, type CostRecord, type Project, type Task, type Note, type PlannerEvent } from '@/lib/supabase'
 import { LiveStats } from '@/components/realtime/live-stats'
 import { ServiceHealth } from '@/components/service-health'
 import { PipelineMini } from '@/components/pipeline-mini'
@@ -8,6 +8,9 @@ import { WeatherWidget } from '@/components/weather-widget'
 import { NewsWidget } from '@/components/news-widget'
 import { WeekOverview } from '@/components/week-overview'
 import { BudgetTracker } from '@/components/budget-tracker'
+import { NotesWidget } from '@/components/notes-widget'
+import { PlannerWidget } from '@/components/planner-widget'
+import { DashboardRealtime } from '@/components/dashboard-realtime'
 import { ArrowUpRight, Bot, Radio, ListTodo, GitCommit, DollarSign, GitMerge } from 'lucide-react'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
@@ -45,12 +48,14 @@ async function fetchGitCommits(): Promise<GitCommitData[]> {
 }
 
 async function getDashboardData() {
-  const [sessions, logs, costs, projects, tasks, commits] = await Promise.all([
+  const [sessions, logs, costs, projects, tasks, notes, plannerEvents, commits] = await Promise.all([
     sbFetch('agent_sessions?select=*&order=last_seen_at.desc'),
     sbFetch('agent_logs?select=*&order=created_at.desc&limit=15'),
     sbFetch('cost_tracking?select=*'),
     sbFetch('projects?select=*&status=eq.active'),
     sbFetch('tasks?select=*&order=priority.asc,created_at.asc'),
+    sbFetch('notes?select=*&order=created_at.desc&limit=10'),
+    sbFetch('planner_events?select=*&order=event_date.asc,event_time.asc&limit=20'),
     fetchGitCommits(),
   ])
   return {
@@ -59,6 +64,8 @@ async function getDashboardData() {
     costs: (costs as CostRecord[]) ?? [],
     projects: (projects as Project[]) ?? [],
     tasks: (tasks as Task[]) ?? [],
+    notes: (notes as Note[]) ?? [],
+    plannerEvents: (plannerEvents as PlannerEvent[]) ?? [],
     commits: (commits as GitCommitData[]) ?? [],
   }
 }
@@ -92,7 +99,7 @@ function BentoHeader({ title, href, badge }: { title: string; href: string; badg
 }
 
 export default async function DashboardPage() {
-  const { sessions, logs, costs, tasks, commits } = await getDashboardData()
+  const { sessions, logs, costs, projects, tasks, notes, plannerEvents, commits } = await getDashboardData()
 
   const activeSessions = sessions.filter(s => s.status === 'active')
   const todayStr = new Date().toISOString().slice(0, 10)
@@ -116,6 +123,8 @@ export default async function DashboardPage() {
       <div className="orb-cyan" style={{ bottom: '-150px', left: '-100px' }} />
 
       <div className="relative z-10 p-4 space-y-3">
+        <DashboardRealtime />
+
         {/* Header — verborgen op mobiel (topbar doet dit al) */}
         <div className="hidden lg:flex items-center justify-between">
           <div>
@@ -154,7 +163,7 @@ export default async function DashboardPage() {
         <LiveStats
           initialSessions={sessions}
           initialCosts={costs}
-          initialProjects={[]}
+          initialProjects={projects}
         />
 
         {/* Weer + Nieuws rij */}
@@ -333,6 +342,12 @@ export default async function DashboardPage() {
               <BudgetTracker todayTotal={todayTotal} />
             </div>
           </div>
+        </div>
+
+        {/* Bento grid row 3 — Notities + Planner */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          <NotesWidget initialNotes={notes} />
+          <PlannerWidget initialEvents={plannerEvents} />
         </div>
 
         {/* Weekoverzicht */}
