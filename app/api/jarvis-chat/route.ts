@@ -5,8 +5,8 @@ import Anthropic from '@anthropic-ai/sdk'
 import { fetchWeather, weatherEmoji } from '@/lib/weather'
 import { fetchHNNews, fetchNOSNews } from '@/lib/news'
 
-const SB_URL = 'https://logkkueavewqmaquuwfw.supabase.co'
-const SB_KEY = 'sb_publishable_nqPICLQDoaXGb8hshPIYYg_uv9GRuid'
+const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const SB_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const SB_HEADERS = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` }
 
 const client = new Anthropic({

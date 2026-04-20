@@ -2,9 +2,9 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 
-const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://logkkueavewqmaquuwfw.supabase.co'
-const SB_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? 'sb_publishable_nqPICLQDoaXGb8hshPIYYg_uv9GRuid'
-const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET ?? 'mc-webhook-2026'
+const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const SB_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET!
 
 export async function POST(req: NextRequest) {
   // Authenticatie via header

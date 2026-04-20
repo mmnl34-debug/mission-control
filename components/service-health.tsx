@@ -1,5 +1,5 @@
-const SB_URL = 'https://logkkueavewqmaquuwfw.supabase.co'
-const SB_KEY = 'sb_publishable_nqPICLQDoaXGb8hshPIYYg_uv9GRuid'
+const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const SB_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 type ServiceStatus = {
   name: string

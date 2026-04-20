@@ -1,8 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Anon key is safe to include — RLS policies protect the data
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://logkkueavewqmaquuwfw.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? 'sb_publishable_nqPICLQDoaXGb8hshPIYYg_uv9GRuid'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 

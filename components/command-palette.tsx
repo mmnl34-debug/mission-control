@@ -7,8 +7,8 @@ import {
   DollarSign, Mic, Command, Plus, Search, Check, GitMerge,
 } from 'lucide-react'
 
-const SB_URL  = 'https://logkkueavewqmaquuwfw.supabase.co'
-const SB_KEY  = 'sb_publishable_nqPICLQDoaXGb8hshPIYYg_uv9GRuid'
+const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const SB_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const HEADERS = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' }
 
 type CommandEntry = {

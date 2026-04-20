@@ -6,8 +6,8 @@ import { format, isToday, isTomorrow, isPast, isThisWeek, parseISO } from 'date-
 import { nl } from 'date-fns/locale'
 import type { PlannerEvent } from '@/lib/supabase'
 
-const SB_URL = 'https://logkkueavewqmaquuwfw.supabase.co'
-const SB_KEY = 'sb_publishable_nqPICLQDoaXGb8hshPIYYg_uv9GRuid'
+const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const SB_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const SB_HEADERS = {
   apikey: SB_KEY,
   Authorization: `Bearer ${SB_KEY}`,

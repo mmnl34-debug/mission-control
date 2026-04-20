@@ -4,8 +4,8 @@ import { format } from 'date-fns'
 import { AgentsClient } from '@/components/agents-client'
 import { AgentEfficiency } from '@/components/agent-efficiency'
 
-const SB_URL = 'https://logkkueavewqmaquuwfw.supabase.co'
-const SB_KEY = 'sb_publishable_nqPICLQDoaXGb8hshPIYYg_uv9GRuid'
+const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const SB_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const SB_HEADERS = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` }
 
 async function sbFetch(path: string) {
