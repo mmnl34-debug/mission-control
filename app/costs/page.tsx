@@ -1,10 +1,11 @@
 export const dynamic = 'force-dynamic'
 
-import { DollarSign, Cpu, TrendingUp, Zap, BarChart3 } from 'lucide-react'
+import { Euro, Cpu, TrendingUp, Zap, BarChart3 } from 'lucide-react'
 import { format } from 'date-fns'
 import { nl } from 'date-fns/locale'
 import { CostsChart } from '@/components/costs-chart'
 import { ModelPie } from '@/components/model-pie'
+import { fmtEur, toEur } from '@/lib/currency'
 
 const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SB_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -35,8 +36,8 @@ export default async function CostsPage() {
   const totalTokens = totalInput + totalOutput
   const cacheableTokens = totalInput + totalCache + totalCacheWrite
   const cacheHitRate = cacheableTokens > 0 ? (totalCache / cacheableTokens) * 100 : 0
-  const tokensPerDollar = totalCost > 0 ? totalTokens / totalCost : 0
-  const efficiencyScore = Math.min(100, Math.round(cacheHitRate * 0.6 + Math.min(tokensPerDollar / 50000, 40)))
+  const tokensPerEuro = totalCost > 0 ? totalTokens / toEur(totalCost) : 0
+  const efficiencyScore = Math.min(100, Math.round(cacheHitRate * 0.6 + Math.min(tokensPerEuro / 46000, 40)))
 
   // Per model stats
   const byModel: Record<string, { cost: number; tokens: number; count: number }> = {}
@@ -98,7 +99,7 @@ export default async function CostsPage() {
       {/* Summary stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Totale kosten', value: `$${totalCost.toFixed(4)}`, icon: DollarSign, color: '#ec4899' },
+          { label: 'Totale kosten', value: fmtEur(totalCost, 4), icon: Euro, color: '#ec4899' },
           { label: 'Input tokens', value: `${(totalInput / 1000).toFixed(1)}K`, icon: Cpu, color: '#00d4ff' },
           { label: 'Output tokens', value: `${(totalOutput / 1000).toFixed(1)}K`, icon: TrendingUp, color: '#10b981' },
           { label: 'Cache tokens', value: `${(totalCache / 1000).toFixed(1)}K`, icon: Zap, color: '#f59e0b' },
@@ -131,7 +132,7 @@ export default async function CostsPage() {
                 <div key={model}>
                   <div className="flex items-center justify-between text-xs mb-1.5">
                     <span className="font-terminal" style={{ color: '#94a3b8' }}>{model}</span>
-                    <span className="font-terminal font-medium text-white">${stats.cost.toFixed(4)}</span>
+                    <span className="font-terminal font-medium text-white">{fmtEur(stats.cost, 4)}</span>
                   </div>
                   <div className="w-full h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
                     <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: color }} />
@@ -161,7 +162,7 @@ export default async function CostsPage() {
                 <div key={agent}>
                   <div className="flex items-center justify-between text-xs mb-1.5">
                     <span className="font-terminal" style={{ color: '#94a3b8' }}>{agent}</span>
-                    <span className="font-terminal font-medium text-white">${stats.cost.toFixed(4)}</span>
+                    <span className="font-terminal font-medium text-white">{fmtEur(stats.cost, 4)}</span>
                   </div>
                   <div className="w-full h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
                     <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: '#00d4ff' }} />
@@ -217,14 +218,14 @@ export default async function CostsPage() {
             </div>
           </div>
 
-          {/* Tokens per dollar */}
+          {/* Tokens per euro */}
           <div className="p-4 rounded-lg" style={{ background: 'rgba(16,185,129,0.04)', border: '1px solid rgba(16,185,129,0.1)' }}>
-            <div className="font-terminal text-xs mb-2" style={{ color: '#94a3b8' }}>Tokens per Dollar</div>
+            <div className="font-terminal text-xs mb-2" style={{ color: '#94a3b8' }}>Tokens per Euro</div>
             <div className="font-terminal text-2xl font-bold mb-1" style={{ color: '#10b981' }}>
-              {tokensPerDollar > 1000 ? `${(tokensPerDollar / 1000).toFixed(0)}K` : tokensPerDollar.toFixed(0)}
+              {tokensPerEuro > 1000 ? `${(tokensPerEuro / 1000).toFixed(0)}K` : tokensPerEuro.toFixed(0)}
             </div>
             <div className="font-terminal text-xs" style={{ color: '#475569' }}>
-              ${totalCost > 0 ? (totalCost / totalTokens * 1_000_000).toFixed(2) : '0.00'} per 1M tokens
+              €{totalCost > 0 ? (toEur(totalCost) / totalTokens * 1_000_000).toFixed(2) : '0.00'} per 1M tokens
             </div>
             <div className="font-terminal text-xs mt-1" style={{ color: '#334155' }}>
               {(totalTokens / 1000).toFixed(1)}K totale tokens
@@ -260,7 +261,7 @@ export default async function CostsPage() {
                   <td className="px-4 py-2.5" style={{ color: '#94a3b8' }}>{(r.input_tokens / 1000).toFixed(1)}K</td>
                   <td className="px-4 py-2.5" style={{ color: '#94a3b8' }}>{(r.output_tokens / 1000).toFixed(1)}K</td>
                   <td className="px-4 py-2.5" style={{ color: '#94a3b8' }}>{(r.cache_read_tokens / 1000).toFixed(1)}K</td>
-                  <td className="px-4 py-2.5 font-medium text-white">${Number(r.cost_usd).toFixed(4)}</td>
+                  <td className="px-4 py-2.5 font-medium text-white">{fmtEur(Number(r.cost_usd), 4)}</td>
                   <td className="px-4 py-2.5" style={{ color: '#475569' }}>
                     {format(new Date(r.recorded_at), 'd MMM HH:mm', { locale: nl })}
                   </td>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Target, Pencil, Check } from 'lucide-react'
+import { toEur } from '@/lib/currency'
 
 interface Props {
   todayTotal: number
@@ -13,7 +14,7 @@ export function BudgetTracker({ todayTotal }: Props) {
   const [input, setInput] = useState('')
 
   useEffect(() => {
-    const stored = localStorage.getItem('mc-daily-budget')
+    const stored = localStorage.getItem('mc-daily-budget-eur')
     if (stored) setBudget(parseFloat(stored))
   }, [])
 
@@ -21,13 +22,14 @@ export function BudgetTracker({ todayTotal }: Props) {
     const val = parseFloat(input)
     if (!isNaN(val) && val > 0) {
       setBudget(val)
-      localStorage.setItem('mc-daily-budget', String(val))
+      localStorage.setItem('mc-daily-budget-eur', String(val))
     }
     setEditing(false)
   }
 
-  const pct = budget ? Math.min((todayTotal / budget) * 100, 100) : 0
-  const overBudget = budget ? todayTotal > budget : false
+  const todayEur = toEur(todayTotal)
+  const pct = budget ? Math.min((todayEur / budget) * 100, 100) : 0
+  const overBudget = budget ? todayEur > budget : false
   const nearLimit = budget ? pct >= 80 && !overBudget : false
 
   const barColor = overBudget ? '#ef4444' : nearLimit ? '#f59e0b' : '#10b981'
@@ -49,7 +51,7 @@ export function BudgetTracker({ todayTotal }: Props) {
     return (
       <div className="flex items-center gap-2">
         <Target size={11} style={{ color: '#00d4ff', flexShrink: 0 }} />
-        <span className="font-terminal text-xs" style={{ color: '#475569' }}>$</span>
+        <span className="font-terminal text-xs" style={{ color: '#475569' }}>€</span>
         <input
           autoFocus
           type="number"
@@ -78,7 +80,7 @@ export function BudgetTracker({ todayTotal }: Props) {
         </div>
         <div className="flex items-center gap-2">
           <span className="font-terminal text-xs" style={{ color: overBudget ? '#ef4444' : nearLimit ? '#f59e0b' : '#f1f5f9' }}>
-            ${todayTotal.toFixed(3)} / ${budget!.toFixed(2)}
+            €{todayEur.toFixed(3)} / €{budget!.toFixed(2)}
           </span>
           <button
             onClick={() => { setEditing(true); setInput(String(budget)) }}
@@ -96,7 +98,7 @@ export function BudgetTracker({ todayTotal }: Props) {
       </div>
       {overBudget && (
         <p className="font-terminal" style={{ fontSize: 10, color: '#ef4444' }}>
-          Budget overschreden met ${(todayTotal - budget!).toFixed(3)}
+          Budget overschreden met €{(todayEur - budget!).toFixed(3)}
         </p>
       )}
     </div>

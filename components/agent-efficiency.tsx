@@ -1,4 +1,5 @@
 import { TrendingUp, AlertTriangle, Cpu } from 'lucide-react'
+import { fmtEur } from '@/lib/currency'
 
 const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SB_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -125,9 +126,9 @@ export async function AgentEfficiency() {
 
           {/* Cost */}
           <div className="text-right">
-            <div style={{ color: '#ec4899' }}>${agent.totalCost.toFixed(3)}</div>
+            <div style={{ color: '#ec4899' }}>{fmtEur(agent.totalCost, 3)}</div>
             {agent.sessionCount > 0 && (
-              <div style={{ fontSize: 9, color: '#334155' }}>${agent.avgCostPerSession.toFixed(3)}/sess</div>
+              <div style={{ fontSize: 9, color: '#334155' }}>{fmtEur(agent.avgCostPerSession, 3)}/sess</div>
             )}
           </div>
 
@@ -170,7 +171,7 @@ export async function AgentEfficiency() {
       <div className="flex items-center gap-4 px-4 py-2" style={{ borderTop: '1px solid rgba(0,212,255,0.06)', background: 'rgba(0,0,0,0.2)' }}>
         <div className="flex items-center gap-1.5 font-terminal" style={{ fontSize: 10, color: '#334155' }}>
           <TrendingUp size={10} style={{ color: '#10b981' }} />
-          Totaal: ${agents.reduce((s, a) => s + a.totalCost, 0).toFixed(3)}
+          Totaal: {fmtEur(agents.reduce((s, a) => s + a.totalCost, 0), 3)}
         </div>
         <div className="font-terminal" style={{ fontSize: 10, color: '#334155' }}>
           {agents.reduce((s, a) => s + a.totalTokens, 0).toLocaleString('nl-NL')} tokens

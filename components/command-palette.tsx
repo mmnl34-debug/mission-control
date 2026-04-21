@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   LayoutDashboard, Bot, Radio, ListTodo, FolderKanban,
-  DollarSign, Mic, Command, Plus, Search, Check, GitMerge,
+  Euro, Mic, Command, Plus, Search, Check, GitMerge,
 } from 'lucide-react'
 
 const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -26,7 +26,7 @@ const COMMANDS: CommandEntry[] = [
   { label: 'Taken',             icon: ListTodo,        action: 'navigate', href: '/tasks' },
   { label: 'Projecten',         icon: FolderKanban,    action: 'navigate', href: '/projects' },
   { label: 'Pipeline',          icon: GitMerge,        action: 'navigate', href: '/pipeline' },
-  { label: 'Kosten',            icon: DollarSign,      action: 'navigate', href: '/costs' },
+  { label: 'Kosten',            icon: Euro,            action: 'navigate', href: '/costs' },
   { label: 'Log zoeken',        description: 'Doorzoek alle agent logs', icon: Search, action: 'search' },
   { label: 'Nieuwe taak',       description: 'Taak aanmaken en direct in kanban zetten', icon: Plus, action: 'create-task' },
   { label: 'JARVIS activeren',  icon: Mic,             action: 'jarvis' },

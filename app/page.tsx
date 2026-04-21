@@ -11,7 +11,8 @@ import { BudgetTracker } from '@/components/budget-tracker'
 import { NotesWidget } from '@/components/notes-widget'
 import { PlannerWidget } from '@/components/planner-widget'
 import { DashboardRealtime } from '@/components/dashboard-realtime'
-import { ArrowUpRight, Bot, Radio, ListTodo, GitCommit, DollarSign, GitMerge } from 'lucide-react'
+import { ArrowUpRight, Bot, Radio, ListTodo, GitCommit, Euro, GitMerge } from 'lucide-react'
+import { fmtEur } from '@/lib/currency'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import { nl } from 'date-fns/locale'
@@ -324,13 +325,13 @@ export default async function DashboardPage() {
             <div className="p-3">
               <div className="mb-3">
                 <div className="font-terminal text-2xl font-bold" style={{ color: '#f1f5f9' }}>
-                  ${todayTotal.toFixed(4)}
+                  {fmtEur(todayTotal, 4)}
                 </div>
                 <span className="font-terminal text-xs" style={{ color: '#334155' }}>totaal vandaag</span>
               </div>
               {topModel ? (
                 <div className="flex items-center gap-2 p-2.5 rounded-lg mb-3" style={{ background: 'rgba(0,212,255,0.05)', border: '1px solid rgba(0,212,255,0.1)' }}>
-                  <DollarSign size={12} style={{ color: '#00d4ff' }} />
+                  <Euro size={12} style={{ color: '#00d4ff' }} />
                   <div className="min-w-0 flex-1">
                     <p className="font-terminal text-xs truncate" style={{ color: '#cbd5e1' }}>{topModel[0]}</p>
                     <p className="font-terminal" style={{ color: '#00d4ff', fontSize: '10px' }}>{topModelPct}% van totaal</p>

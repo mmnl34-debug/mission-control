@@ -1,6 +1,7 @@
 'use client'
 
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
+import { toEur } from '@/lib/currency'
 
 type Props = {
   dailyData: { date: string; cost: number }[]
@@ -25,7 +26,7 @@ export function CostsChart({ dailyData }: Props) {
               tick={{ fill: '#475569', fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
               axisLine={{ stroke: 'rgba(0,212,255,0.1)' }}
               tickLine={false}
-              tickFormatter={v => `$${v}`}
+              tickFormatter={v => `€${toEur(Number(v)).toFixed(2)}`}
             />
             <Tooltip
               contentStyle={{
@@ -36,7 +37,7 @@ export function CostsChart({ dailyData }: Props) {
                 fontSize: 11,
                 color: '#cbd5e1',
               }}
-              formatter={(value) => [`$${Number(value).toFixed(4)}`, 'Kosten']}
+              formatter={(value) => [`€${toEur(Number(value)).toFixed(4)}`, 'Kosten']}
               cursor={{ fill: 'rgba(0,212,255,0.05)' }}
             />
             <Bar dataKey="cost" fill="#00d4ff" fillOpacity={0.8} radius={[4, 4, 0, 0]} />

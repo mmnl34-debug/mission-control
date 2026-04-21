@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { fetchWeather, weatherEmoji } from '@/lib/weather'
 import { fetchHNNews, fetchNOSNews } from '@/lib/news'
+import { toEur } from '@/lib/currency'
 
 const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SB_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -40,9 +41,9 @@ async function getDashboardContext(): Promise<string> {
 ${active.map((s: { agent_name: string; project: string | null; current_task: string | null; model: string }) => `  - ${s.agent_name}${s.project ? ` | project: ${s.project}` : ''}${s.current_task ? ` | taak: ${s.current_task.slice(0, 80)}` : ''} | model: ${s.model}`).join('\n')}
 
 ### Kosten vandaag
-- Totaal: $${totalToday.toFixed(4)}
+- Totaal: €${toEur(totalToday).toFixed(4)}
 - Tokens: ${totalTokens.toLocaleString('nl-NL')}
-${todayCosts.slice(0, 5).map((c: { agent_name: string | null; model: string; cost_usd: number }) => `  - ${c.agent_name ?? 'onbekend'} (${c.model}): $${Number(c.cost_usd).toFixed(4)}`).join('\n')}
+${todayCosts.slice(0, 5).map((c: { agent_name: string | null; model: string; cost_usd: number }) => `  - ${c.agent_name ?? 'onbekend'} (${c.model}): €${toEur(Number(c.cost_usd)).toFixed(4)}`).join('\n')}
 
 ### Recente activiteit (laatste 10)
 ${logs.slice(0, 10).map((l: { event_type: string; agent_name: string; message: string }) => `  - [${l.event_type}] ${l.agent_name}: ${l.message?.slice(0, 100)}`).join('\n')}

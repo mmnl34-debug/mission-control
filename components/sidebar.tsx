@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
   LayoutDashboard, Bot, Radio, ListTodo, FolderKanban,
-  DollarSign, Activity, Zap, Menu, X, GitMerge, Search,
+  Euro, Activity, Zap, Menu, X, GitMerge, Search,
   StickyNote, CalendarDays,
 } from 'lucide-react'
 
@@ -18,7 +18,7 @@ const nav = [
   { href: '/planner', label: 'Planner', icon: CalendarDays },
   { href: '/projects', label: 'Projecten', icon: FolderKanban },
   { href: '/pipeline', label: 'Pipeline', icon: GitMerge },
-  { href: '/costs', label: 'Kosten', icon: DollarSign },
+  { href: '/costs', label: 'Kosten', icon: Euro },
   { href: '/search', label: 'Log Search', icon: Search },
 ]
 

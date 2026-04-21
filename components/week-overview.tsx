@@ -1,4 +1,5 @@
-import { TrendingUp, CheckSquare, Bot, DollarSign } from 'lucide-react'
+import { TrendingUp, CheckSquare, Bot, Euro } from 'lucide-react'
+import { fmtEur } from '@/lib/currency'
 
 const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SB_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -36,7 +37,7 @@ export async function WeekOverview() {
   const stats = [
     { label: 'Klaar deze week', value: doneTasks, icon: CheckSquare, color: '#10b981' },
     { label: 'Sessies', value: weekSessions, icon: Bot, color: '#00d4ff' },
-    { label: 'Kosten week', value: `$${weekCost.toFixed(3)}`, icon: DollarSign, color: '#ec4899' },
+    { label: 'Kosten week', value: fmtEur(weekCost, 3), icon: Euro, color: '#ec4899' },
     { label: 'Tokens week', value: weekTokens >= 1000 ? `${(weekTokens / 1000).toFixed(1)}K` : weekTokens, icon: TrendingUp, color: '#f59e0b' },
   ]
 

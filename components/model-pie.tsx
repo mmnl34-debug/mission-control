@@ -1,6 +1,7 @@
 'use client'
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
+import { fmtEur, toEur } from '@/lib/currency'
 
 type ModelData = {
   name: string
@@ -46,7 +47,7 @@ export function ModelPie({ modelData, totalCost }: Props) {
                     fontSize: 11,
                     color: '#cbd5e1',
                   }}
-                  formatter={(value) => [`$${Number(value).toFixed(4)}`, 'Kosten']}
+                  formatter={(value) => [`€${toEur(Number(value)).toFixed(4)}`, 'Kosten']}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -55,7 +56,7 @@ export function ModelPie({ modelData, totalCost }: Props) {
               className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
             >
               <span className="font-terminal text-lg font-bold" style={{ color: '#f1f5f9' }}>
-                ${totalCost.toFixed(2)}
+                {fmtEur(totalCost, 2)}
               </span>
               <span className="font-terminal text-xs" style={{ color: '#475569' }}>totaal</span>
             </div>

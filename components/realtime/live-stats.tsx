@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { supabase, type AgentSession, type CostRecord, type Project } from '@/lib/supabase'
-import { Bot, FolderKanban, Activity, DollarSign } from 'lucide-react'
+import { Bot, FolderKanban, Activity, Euro } from 'lucide-react'
+import { fmtEur } from '@/lib/currency'
 
 type Props = {
   initialSessions: AgentSession[]
@@ -152,8 +153,8 @@ export function LiveStats({ initialSessions, initialCosts, initialProjects }: Pr
     {
       key: 'cost',
       label: 'Total Cost',
-      value: `$${totalCost.toFixed(4)}`,
-      icon: DollarSign,
+      value: fmtEur(totalCost, 4),
+      icon: Euro,
       topColor: '#ec4899',
     },
   ]
