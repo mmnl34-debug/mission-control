@@ -45,6 +45,10 @@ export async function conversationsInfo(channel: string) {
   return res.json() as Promise<{ ok: boolean; channel?: { id: string; name: string }; error?: string }>
 }
 
+export async function inviteToConversation(args: { channel: string; users: string }) {
+  return slackCall('conversations.invite', args)
+}
+
 export async function authTest() {
   const res = await fetch(`${SLACK_API}/auth.test`, {
     headers: { Authorization: `Bearer ${SLACK_BOT_TOKEN}` },
