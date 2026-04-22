@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local scripts with secrets (bevatten tokens — nooit committen)
+provision-slack.sh
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
