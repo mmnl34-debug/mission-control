@@ -105,8 +105,8 @@ Nu de magie: één keer een POST naar `/api/slack/provision` en alle kanalen sta
 **Vanaf je terminal (Tabby / VS Code terminal):**
 
 ```bash
-curl -X POST "https://JOUW-DOMEIN/api/slack/provision" \\
-  -H "x-provision-token: JOUW\_PROVISION\_TOKEN"
+curl -X POST "https://https://mission-control-kl7g.vercel.app//api/slack/provision" \\
+  -H "x-provision-token: Nj5dcuq9RuqoUQyBXWaCNgoMCUwyoHX3"
 ```
 
 Vervang:
@@ -200,6 +200,29 @@ Ga direct naar **`#agent-ad-seo`** en typ een vraag. Je krijgt meteen antwoord v
 * Router mapt `agent-<key>` kanalen op de bijbehorende agent. Kanaalnaam `agent-mgr-ad` → `mgr-ad`-agent. Hernoemen van kanalen in Slack breekt deze mapping — beter niet doen.
 
 \---
+
+## Takenbeheer vanuit Slack (slash-commands)
+
+Naast `/agents` en `/agent` heeft Mission Control deze commands voor **taken- en projectsync** met het dashboard:
+
+| Command | Wat het doet | Voorbeeld |
+|---|---|---|
+| `/task <titel>` | Nieuwe taak. Optioneel `#<project>` aan het eind. Default: `Mission Control` of afgeleid uit kanaal (`orchestrator`/`brein`). | `/task koffie halen #Helix Studio` |
+| `/tasks [project]` | Top 10 open taken (todo + in_progress). | `/tasks Mission Control` |
+| `/done <id-prefix>` | Zet taak op `done`. Prefix moet uniek matchen. | `/done 1ba85ca2` |
+| `/projects` | Alle actieve projecten. | `/projects` |
+| `/project <naam>` | Nieuw project (status `active`, cyan kleur). | `/project Website redesign` |
+
+### Commands activeren in je Slack-app
+
+De commands staan in `slack-app-manifest.json`. Voor bestaande apps re-apply je het manifest:
+
+1. Ga naar https://api.slack.com/apps → selecteer *Mission Control*
+2. Links: **App Manifest** → plak de inhoud van `slack-app-manifest.json` (met jouw domein ingevuld) → **Save Changes**
+3. Slack waarschuwt over nieuwe scopes/commands → bevestigen en **Reinstall App** klikken
+4. Klaar — de 5 nieuwe commands zijn direct beschikbaar
+
+---
 
 ## Wat deze setup NIET doet (nog)
 
