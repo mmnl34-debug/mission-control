@@ -17,9 +17,9 @@ const SB_HEADERS = {
 }
 
 const TYPE_OPTIONS: { value: AlertRuleType; label: string; unit: string; unitBefore: boolean; hint: string }[] = [
-  { value: 'daily_cost',   label: 'Dagelijkse kosten > drempel (USD)',    unit: '$',   unitBefore: true,  hint: 'triggert als kosten van vandaag in totaal > drempel' },
-  { value: 'hourly_spike', label: 'Kostenpiek laatste uur > drempel (USD)', unit: '$', unitBefore: true,  hint: 'triggert als totale kosten van de laatste 60 min > drempel' },
-  { value: 'agent_idle',   label: 'Agent idle > drempel (minuten)',         unit: 'min', unitBefore: false, hint: 'triggert als een active agent langer dan drempel niet heeft geseend' },
+  { value: 'daily_cost',   label: 'Dagelijkse API-kosten > drempel (USD)',    unit: '$',   unitBefore: true,  hint: 'alleen Slack-bot API-kosten (session_id = slack-*). Claude Code lokaal telt niet mee.' },
+  { value: 'hourly_spike', label: 'API-kostenpiek laatste uur > drempel (USD)', unit: '$', unitBefore: true,  hint: 'alleen Slack-bot API-kosten in de laatste 60 min.' },
+  { value: 'agent_idle',   label: 'Agent idle > drempel (minuten)',            unit: 'min', unitBefore: false, hint: 'triggert als een active agent langer dan drempel niet heeft geseend' },
 ]
 
 function typeMeta(t: AlertRuleType) {

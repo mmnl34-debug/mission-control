@@ -21,12 +21,17 @@ type EvalResult = { triggered: boolean; message?: string }
 
 async function evalDailyCost(supabase: SupabaseClient, rule: AlertRule): Promise<EvalResult> {
   const today = amsterdamDate(0)
-  const { data } = await supabase.from('cost_tracking').select('cost_usd').eq('date', today)
+  // Alleen échte API-kosten: Slack-bot sessies. Claude Code lokaal loopt op Pro-abonnement en hoort hier niet.
+  const { data } = await supabase
+    .from('cost_tracking')
+    .select('cost_usd')
+    .eq('date', today)
+    .like('session_id', 'slack-%')
   const total = (data ?? []).reduce((s, r: { cost_usd: number | string }) => s + Number(r.cost_usd || 0), 0)
   if (total > rule.threshold) {
     return {
       triggered: true,
-      message: `:warning: *Dagelijkse kosten overschreden* — vandaag $${fmt(total)} > drempel $${fmt(rule.threshold)} (${rule.name})`,
+      message: `:warning: *Dagelijkse API-kosten overschreden* — vandaag $${fmt(total)} > drempel $${fmt(rule.threshold)} (${rule.name})`,
     }
   }
   return { triggered: false }
@@ -34,12 +39,16 @@ async function evalDailyCost(supabase: SupabaseClient, rule: AlertRule): Promise
 
 async function evalHourlySpike(supabase: SupabaseClient, rule: AlertRule): Promise<EvalResult> {
   const cutoff = new Date(Date.now() - 60 * 60 * 1000).toISOString()
-  const { data } = await supabase.from('cost_tracking').select('cost_usd').gte('recorded_at', cutoff)
+  const { data } = await supabase
+    .from('cost_tracking')
+    .select('cost_usd')
+    .gte('recorded_at', cutoff)
+    .like('session_id', 'slack-%')
   const total = (data ?? []).reduce((s, r: { cost_usd: number | string }) => s + Number(r.cost_usd || 0), 0)
   if (total > rule.threshold) {
     return {
       triggered: true,
-      message: `:fire: *Kostenpiek laatste uur* — $${fmt(total)} > drempel $${fmt(rule.threshold)} (${rule.name})`,
+      message: `:fire: *API-kostenpiek laatste uur* — $${fmt(total)} > drempel $${fmt(rule.threshold)} (${rule.name})`,
     }
   }
   return { triggered: false }
