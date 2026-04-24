@@ -22,6 +22,40 @@
         "description": "Info over één specifieke agent",
         "usage_hint": "mgr-ad",
         "should_escape": false
+      },
+      {
+        "command": "/task",
+        "url": "https://REPLACE_WITH_YOUR_DOMAIN/api/slack/commands",
+        "description": "Nieuwe taak aanmaken in Mission Control",
+        "usage_hint": "<titel> #<project>",
+        "should_escape": false
+      },
+      {
+        "command": "/tasks",
+        "url": "https://REPLACE_WITH_YOUR_DOMAIN/api/slack/commands",
+        "description": "Open taken tonen (top 10)",
+        "usage_hint": "[project]",
+        "should_escape": false
+      },
+      {
+        "command": "/done",
+        "url": "https://REPLACE_WITH_YOUR_DOMAIN/api/slack/commands",
+        "description": "Zet een taak op done",
+        "usage_hint": "<id-prefix>",
+        "should_escape": false
+      },
+      {
+        "command": "/projects",
+        "url": "https://REPLACE_WITH_YOUR_DOMAIN/api/slack/commands",
+        "description": "Actieve projecten tonen",
+        "should_escape": false
+      },
+      {
+        "command": "/project",
+        "url": "https://REPLACE_WITH_YOUR_DOMAIN/api/slack/commands",
+        "description": "Nieuw project aanmaken",
+        "usage_hint": "<naam>",
+        "should_escape": false
       }
     ]
   },
