@@ -76,6 +76,22 @@ export type Note = {
   updated_at: string
 }
 
+export type AlertRuleType = 'daily_cost' | 'hourly_spike' | 'agent_idle'
+
+export type AlertRule = {
+  id: string
+  name: string
+  type: AlertRuleType
+  threshold: number
+  channel: string
+  enabled: boolean
+  cooldown_minutes: number
+  last_fired_at: string | null
+  last_message: string | null
+  created_at: string
+  updated_at: string
+}
+
 export type PlannerEvent = {
   id: string
   title: string
