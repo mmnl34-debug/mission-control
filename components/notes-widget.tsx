@@ -29,7 +29,7 @@ export function NotesWidget({ initialNotes }: Props) {
   }, [])
 
   const unprocessed = notes.filter(n => !n.processed)
-  const latest = [...notes].sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 4)
+  const latest = [...unprocessed].sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 4)
 
   return (
     <div className="hud-card">

@@ -38,6 +38,7 @@ yarn-error.log*
 
 # local scripts with secrets (bevatten tokens — nooit committen)
 provision-slack.sh
+invite-me.sh
 
 # typescript
 *.tsbuildinfo
