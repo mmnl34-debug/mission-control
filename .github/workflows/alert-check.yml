@@ -27,4 +27,13 @@ jobs:
             https://mission-control-kl7g.vercel.app/api/cron/alert-check)
           echo "HTTP $HTTP_CODE"
           cat /tmp/body
-          [ "$HTTP_CODE" = "200" ]
+          echo ""
+          if [ "$HTTP_CODE" = "200" ]; then
+            exit 0
+          fi
+          # Tolerate "table not yet created" during initial setup window
+          if grep -q "rules_fetch_failed" /tmp/body && grep -q "alert_rules" /tmp/body; then
+            echo "::warning::alert_rules tabel bestaat nog niet — run scripts/sql/alert_rules.sql in Supabase"
+            exit 0
+          fi
+          exit 1
