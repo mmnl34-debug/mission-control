@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Bell, BellOff, Pencil, Check, X, Zap } from 'lucide-react'
+import Link from 'next/link'
+import { Bell, BellOff, Pencil, Check, X, Zap, ArrowUpRight } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { nl } from 'date-fns/locale'
 import { supabase, type AlertRule, type AlertRuleType } from '@/lib/supabase'
@@ -89,9 +90,13 @@ export function AlertRulesWidget({ initialRules }: Props) {
             {activeCount} actief
           </span>
         </div>
-        <span className="font-terminal text-xs" style={{ color: '#334155' }}>
-          realtime
-        </span>
+        <Link
+          href="/alerts"
+          className="flex items-center gap-1 font-terminal text-xs transition-colors"
+          style={{ color: '#475569' }}
+        >
+          View all <ArrowUpRight size={11} />
+        </Link>
       </div>
 
       <div className="p-3 space-y-2">

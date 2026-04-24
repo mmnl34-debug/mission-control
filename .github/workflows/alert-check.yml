@@ -1,0 +1,30 @@
+name: Alert check (15 min)
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: alert-check
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Call alert-check endpoint
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::error::CRON_SECRET secret not set in repository"
+            exit 1
+          fi
+          HTTP_CODE=$(curl -s -o /tmp/body -w "%{http_code}" \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            https://mission-control-kl7g.vercel.app/api/cron/alert-check)
+          echo "HTTP $HTTP_CODE"
+          cat /tmp/body
+          [ "$HTTP_CODE" = "200" ]
