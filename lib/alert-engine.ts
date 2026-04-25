@@ -94,15 +94,30 @@ function cooldownActive(rule: AlertRule): boolean {
   return since < rule.cooldown_minutes * 60 * 1000
 }
 
+const STALE_SESSION_MINUTES = 30
+
+async function reconcileStaleSessions(supabase: SupabaseClient): Promise<number> {
+  const cutoff = new Date(Date.now() - STALE_SESSION_MINUTES * 60 * 1000).toISOString()
+  const { data, error } = await supabase
+    .from('agent_sessions')
+    .update({ status: 'idle' })
+    .eq('status', 'active')
+    .lt('last_seen_at', cutoff)
+    .select('id')
+  if (error) return 0
+  return (data ?? []).length
+}
+
 export type AlertCheckResult =
   | { ok: false; status: number; error: string; detail?: string; missing?: string[] }
-  | { ok: true; status: number; evaluated: number; fired: { rule: string; message: string }[]; skipped: { rule: string; reason: string }[] }
+  | { ok: true; status: number; evaluated: number; reconciled: number; fired: { rule: string; message: string }[]; skipped: { rule: string; reason: string }[] }
 
 export async function runAlertCheck(opts: { force?: boolean } = {}): Promise<AlertCheckResult> {
   const cfg = assertSlackConfigured()
   if (!cfg.ok) return { ok: false, status: 500, error: 'slack_not_configured', missing: cfg.missing }
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON)
+  const reconciled = await reconcileStaleSessions(supabase)
   const { data: rulesData, error } = await supabase.from('alert_rules').select('*').eq('enabled', true)
   if (error) return { ok: false, status: 500, error: 'rules_fetch_failed', detail: error.message }
   const rules = (rulesData ?? []) as AlertRule[]
@@ -132,5 +147,5 @@ export async function runAlertCheck(opts: { force?: boolean } = {}): Promise<Ale
     fired.push({ rule: rule.name, message: result.message })
   }
 
-  return { ok: true, status: 200, evaluated: rules.length, fired, skipped }
+  return { ok: true, status: 200, evaluated: rules.length, reconciled, fired, skipped }
 }
