@@ -99,8 +99,10 @@ export function AgendaNotifications() {
     setPermission(result)
   }
 
-  // Geen banner nodig als al toegestaan, geweigerd, of weggetipt
-  if (permission !== 'default' || dismissed) return null
+  // Weggetipt of al toegestaan: niets tonen
+  if (dismissed || permission === 'granted' || permission === null) return null
+
+  const isBlocked = permission === 'denied'
 
   return (
     <div
@@ -110,35 +112,45 @@ export function AgendaNotifications() {
         right: 24,
         zIndex: 9999,
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         gap: 10,
         padding: '10px 14px',
         borderRadius: 10,
         background: 'rgba(7,7,15,0.97)',
-        border: '1px solid rgba(0,212,255,0.3)',
-        boxShadow: '0 0 24px rgba(0,212,255,0.15)',
+        border: `1px solid ${isBlocked ? 'rgba(239,68,68,0.35)' : 'rgba(0,212,255,0.3)'}`,
+        boxShadow: `0 0 24px ${isBlocked ? 'rgba(239,68,68,0.1)' : 'rgba(0,212,255,0.15)'}`,
         backdropFilter: 'blur(16px)',
-        maxWidth: 320,
+        maxWidth: 340,
       }}
     >
-      <Bell size={14} style={{ color: '#00d4ff', flexShrink: 0 }} />
-      <span className="font-terminal text-xs" style={{ color: '#cbd5e1', flex: 1 }}>
-        Notificaties inschakelen voor agenda-herinneringen?
-      </span>
-      <button
-        onClick={requestPermission}
-        className="font-terminal text-xs px-2 py-1 rounded"
-        style={{
-          background: 'rgba(0,212,255,0.15)',
-          border: '1px solid rgba(0,212,255,0.4)',
-          color: '#00d4ff',
-          cursor: 'pointer',
-          whiteSpace: 'nowrap',
-          flexShrink: 0,
-        }}
-      >
-        Ja, inschakelen
-      </button>
+      <Bell size={14} style={{ color: isBlocked ? '#ef4444' : '#00d4ff', flexShrink: 0, marginTop: 1 }} />
+      {isBlocked ? (
+        <span className="font-terminal text-xs" style={{ color: '#cbd5e1', flex: 1, lineHeight: 1.5 }}>
+          Notificaties geblokkeerd. Ga in Edge naar{' '}
+          <strong style={{ color: '#f1f5f9' }}>Instellingen → Sitemachtigingen → Meldingen</strong>
+          {' '}en verwijder de blokkering voor deze site, dan opnieuw laden.
+        </span>
+      ) : (
+        <>
+          <span className="font-terminal text-xs" style={{ color: '#cbd5e1', flex: 1 }}>
+            Notificaties inschakelen voor agenda-herinneringen?
+          </span>
+          <button
+            onClick={requestPermission}
+            className="font-terminal text-xs px-2 py-1 rounded"
+            style={{
+              background: 'rgba(0,212,255,0.15)',
+              border: '1px solid rgba(0,212,255,0.4)',
+              color: '#00d4ff',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
+            }}
+          >
+            Ja, inschakelen
+          </button>
+        </>
+      )}
       <button
         onClick={() => setDismissed(true)}
         style={{ background: 'none', border: 'none', color: '#475569', cursor: 'pointer', padding: 2, flexShrink: 0 }}
