@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { CalendarDays, Plus, X, Check, Clock, Trash2, Folder, Undo2 } from 'lucide-react'
 import { format, isToday, isTomorrow, isPast, isThisWeek, parseISO } from 'date-fns'
 import { nl } from 'date-fns/locale'
-import type { PlannerEvent } from '@/lib/supabase'
+import type { PlannerEvent, AgendaCategory } from '@/lib/supabase'
 
 const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SB_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -14,9 +14,22 @@ const SB_HEADERS = {
   'Content-Type': 'application/json',
 }
 
+const DEFAULT_CATEGORIES: AgendaCategory[] = [
+  { id: 'klant',    name: 'Klant',             color: '#3b82f6', is_default: true, created_at: '' },
+  { id: 'dokter',   name: 'Dokter/Ziekenhuis', color: '#ef4444', is_default: true, created_at: '' },
+  { id: 'algemeen', name: 'Algemeen',          color: '#94a3b8', is_default: true, created_at: '' },
+]
+
 interface Props {
   initialEvents: PlannerEvent[]
   projects: string[]
+  categories?: AgendaCategory[]
+}
+
+function categoryColor(name: string | null | undefined, cats: AgendaCategory[]): string {
+  if (!name) return '#94a3b8'
+  const hit = cats.find(c => c.name === name)
+  return hit?.color ?? '#94a3b8'
 }
 
 function dateLabel(iso: string): string {
@@ -27,7 +40,7 @@ function dateLabel(iso: string): string {
   return format(d, 'EEE d MMM', { locale: nl })
 }
 
-export function PlannerPage({ initialEvents, projects }: Props) {
+export function PlannerPage({ initialEvents, projects, categories }: Props) {
   const [events, setEvents] = useState<PlannerEvent[]>(initialEvents)
   const [creating, setCreating] = useState(false)
   const [title, setTitle] = useState('')
@@ -35,6 +48,9 @@ export function PlannerPage({ initialEvents, projects }: Props) {
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'))
   const [time, setTime] = useState('')
   const [project, setProject] = useState('')
+  const [category, setCategory] = useState('Algemeen')
+
+  const cats: AgendaCategory[] = (categories && categories.length > 0) ? categories : DEFAULT_CATEGORIES
 
   const groups = useMemo(() => {
     const overdue: PlannerEvent[] = []
@@ -64,7 +80,7 @@ export function PlannerPage({ initialEvents, projects }: Props) {
 
   async function createEvent() {
     if (!title.trim() || !date) return
-    const payload = {
+    const basePayload = {
       title: title.trim(),
       description: description.trim() || null,
       event_date: date,
@@ -72,18 +88,39 @@ export function PlannerPage({ initialEvents, projects }: Props) {
       project: project || null,
       source: 'manual',
     }
-    const res = await fetch(`${SB_URL}/rest/v1/planner_events`, {
-      method: 'POST',
-      headers: { ...SB_HEADERS, Prefer: 'return=representation' },
-      body: JSON.stringify(payload),
-    })
-    if (!res.ok) return
-    const [created] = await res.json()
-    setEvents([...events, created].sort((a, b) => {
-      if (a.event_date !== b.event_date) return a.event_date.localeCompare(b.event_date)
-      return (a.event_time ?? '99:99').localeCompare(b.event_time ?? '99:99')
-    }))
-    setTitle(''); setDescription(''); setTime(''); setProject(''); setCreating(false)
+    const sortAndSet = (created: PlannerEvent) => {
+      setEvents([...events, created].sort((a, b) => {
+        if (a.event_date !== b.event_date) return a.event_date.localeCompare(b.event_date)
+        return (a.event_time ?? '99:99').localeCompare(b.event_time ?? '99:99')
+      }))
+      setTitle(''); setDescription(''); setTime(''); setProject(''); setCategory('Algemeen'); setCreating(false)
+    }
+    try {
+      const res = await fetch(`${SB_URL}/rest/v1/planner_events`, {
+        method: 'POST',
+        headers: { ...SB_HEADERS, Prefer: 'return=representation' },
+        body: JSON.stringify({ ...basePayload, category }),
+      })
+      if (res.ok) {
+        const json = await res.json()
+        const created = Array.isArray(json) ? json[0] : json
+        sortAndSet(created as PlannerEvent)
+        return
+      }
+      // retry without category if column missing
+      const res2 = await fetch(`${SB_URL}/rest/v1/planner_events`, {
+        method: 'POST',
+        headers: { ...SB_HEADERS, Prefer: 'return=representation' },
+        body: JSON.stringify(basePayload),
+      })
+      if (res2.ok) {
+        const json2 = await res2.json()
+        const created2 = Array.isArray(json2) ? json2[0] : json2
+        sortAndSet(created2 as PlannerEvent)
+      }
+    } catch (e) {
+      console.error('createEvent failed', e)
+    }
   }
 
   async function toggleDone(ev: PlannerEvent) {
@@ -109,6 +146,7 @@ export function PlannerPage({ initialEvents, projects }: Props) {
 
   function renderEvent(ev: PlannerEvent, opts: { dim?: boolean } = {}) {
     const done = ev.status === 'done'
+    const catColor = categoryColor(ev.category, cats)
     return (
       <div
         key={ev.id}
@@ -116,9 +154,21 @@ export function PlannerPage({ initialEvents, projects }: Props) {
         style={{
           background: done ? 'rgba(16,185,129,0.04)' : 'rgba(0,212,255,0.02)',
           border: done ? '1px solid rgba(16,185,129,0.2)' : '1px solid rgba(0,212,255,0.1)',
+          borderLeft: done
+            ? '1px solid rgba(16,185,129,0.2)'
+            : `3px solid ${catColor}`,
           opacity: opts.dim ? 0.55 : 1,
         }}
       >
+        <span
+          aria-hidden
+          style={{
+            width: 8, height: 8, borderRadius: '50%',
+            background: catColor,
+            flexShrink: 0,
+            marginTop: 7,
+          }}
+        />
         <button
           onClick={() => toggleDone(ev)}
           aria-label={done ? 'Heropen' : 'Markeer klaar'}
@@ -236,7 +286,7 @@ export function PlannerPage({ initialEvents, projects }: Props) {
             <div className="flex items-center justify-between">
               <span className="hud-label">Nieuw event</span>
               <button
-                onClick={() => { setCreating(false); setTitle(''); setDescription(''); setTime(''); setProject('') }}
+                onClick={() => { setCreating(false); setTitle(''); setDescription(''); setTime(''); setProject(''); setCategory('Algemeen') }}
                 style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}
               >
                 <X size={14} />
@@ -291,6 +341,20 @@ export function PlannerPage({ initialEvents, projects }: Props) {
                   colorScheme: 'dark',
                 }}
               />
+              <select
+                value={category}
+                onChange={e => setCategory(e.target.value)}
+                className="font-terminal text-xs"
+                style={{
+                  background: 'rgba(0,212,255,0.03)',
+                  border: '1px solid rgba(0,212,255,0.12)',
+                  borderRadius: 6, padding: '6px 8px', color: '#94a3b8', outline: 'none',
+                }}
+              >
+                {cats.map(c => (
+                  <option key={c.id} value={c.name}>● {c.name}</option>
+                ))}
+              </select>
               <select
                 value={project}
                 onChange={e => setProject(e.target.value)}

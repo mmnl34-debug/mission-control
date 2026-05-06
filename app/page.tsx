@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 
-import { type AgentSession, type AgentLog, type CostRecord, type Project, type Task, type Note, type PlannerEvent, type AlertRule } from '@/lib/supabase'
+import { type AgentSession, type AgentLog, type CostRecord, type Project, type Task, type Note, type PlannerEvent, type AlertRule, type AgendaCategory } from '@/lib/supabase'
 import { LiveStats } from '@/components/realtime/live-stats'
 import { ServiceHealth } from '@/components/service-health'
 import { PipelineMini } from '@/components/pipeline-mini'
@@ -9,7 +9,7 @@ import { NewsWidget } from '@/components/news-widget'
 import { WeekOverview } from '@/components/week-overview'
 import { BudgetTracker } from '@/components/budget-tracker'
 import { NotesWidget } from '@/components/notes-widget'
-import { PlannerWidget } from '@/components/planner-widget'
+import { AgendaWidget } from '@/components/agenda-widget'
 import { AlertRulesWidget } from '@/components/alert-rules-widget'
 import { DashboardRealtime } from '@/components/dashboard-realtime'
 import { ArrowUpRight, Bot, Radio, ListTodo, GitCommit, Euro, GitMerge } from 'lucide-react'
@@ -50,7 +50,7 @@ async function fetchGitCommits(): Promise<GitCommitData[]> {
 }
 
 async function getDashboardData() {
-  const [sessions, logs, costs, projects, tasks, notes, plannerEvents, alertRules, commits] = await Promise.all([
+  const [sessions, logs, costs, projects, tasks, notes, plannerEvents, alertRules, agendaCategories, commits] = await Promise.all([
     sbFetch('agent_sessions?select=*&order=last_seen_at.desc'),
     sbFetch('agent_logs?select=*&order=created_at.desc&limit=15'),
     sbFetch('cost_tracking?select=*'),
@@ -59,6 +59,7 @@ async function getDashboardData() {
     sbFetch('notes?select=*&order=created_at.desc&limit=10'),
     sbFetch('planner_events?select=*&order=event_date.asc,event_time.asc&limit=20'),
     sbFetch('alert_rules?select=*&order=name.asc'),
+    sbFetch('agenda_categories?select=*&order=name.asc'),
     fetchGitCommits(),
   ])
   return {
@@ -70,6 +71,7 @@ async function getDashboardData() {
     notes: (notes as Note[]) ?? [],
     plannerEvents: (plannerEvents as PlannerEvent[]) ?? [],
     alertRules: (alertRules as AlertRule[]) ?? [],
+    agendaCategories: (agendaCategories as AgendaCategory[]) ?? [],
     commits: (commits as GitCommitData[]) ?? [],
   }
 }
@@ -103,7 +105,7 @@ function BentoHeader({ title, href, badge }: { title: string; href: string; badg
 }
 
 export default async function DashboardPage() {
-  const { sessions, logs, costs, projects, tasks, notes, plannerEvents, alertRules, commits } = await getDashboardData()
+  const { sessions, logs, costs, projects, tasks, notes, plannerEvents, alertRules, agendaCategories, commits } = await getDashboardData()
 
   const activeSessions = sessions.filter(s => s.status === 'active')
   const todayStr = new Date().toISOString().slice(0, 10)
@@ -351,7 +353,7 @@ export default async function DashboardPage() {
         {/* Bento grid row 3 — Notities + Planner */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           <NotesWidget initialNotes={notes} />
-          <PlannerWidget initialEvents={plannerEvents} />
+          <AgendaWidget initialEvents={plannerEvents} initialCategories={agendaCategories} />
         </div>
 
         {/* Alert rules */}

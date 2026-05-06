@@ -101,6 +101,15 @@ export type PlannerEvent = {
   project: string | null
   status: 'planned' | 'done' | 'cancelled'
   source: string | null
+  category: string | null
   created_at: string
   updated_at: string
+}
+
+export type AgendaCategory = {
+  id: string
+  name: string
+  color: string
+  is_default: boolean
+  created_at: string
 }
