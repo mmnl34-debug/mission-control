@@ -4,6 +4,7 @@ import './globals.css'
 import { Sidebar } from '@/components/sidebar'
 import { JarvisVoiceInterface } from '@/components/jarvis/voice-interface'
 import { CommandPalette } from '@/components/command-palette'
+import { AgendaNotifications } from '@/components/agenda-notifications'
 
 const geist = Geist({ subsets: ['latin'] })
 
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="flex-1 overflow-auto" id="main-content">
           {children}
         </main>
+        <AgendaNotifications />
         <JarvisVoiceInterface />
         <CommandPalette />
       </body>
