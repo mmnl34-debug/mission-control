@@ -18,7 +18,6 @@ permissions:
 jobs:
   claude:
     runs-on: ubuntu-latest
-    # Alleen uitvoeren als @claude ergens in de tekst staat
     if: |
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
@@ -28,4 +27,4 @@ jobs:
       - name: Claude Code Action
         uses: anthropics/claude-code-action@beta
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
