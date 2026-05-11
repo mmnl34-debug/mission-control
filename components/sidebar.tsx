@@ -6,11 +6,12 @@ import { useEffect, useState } from 'react'
 import {
   LayoutDashboard, Bot, Radio, ListTodo, FolderKanban,
   Euro, Activity, Zap, Menu, X, GitMerge, Search,
-  StickyNote, CalendarDays, Calendar, Bell,
+  StickyNote, CalendarDays, Calendar, Bell, Newspaper,
 } from 'lucide-react'
 
 const nav = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/briefing', label: 'Briefing', icon: Newspaper },
   { href: '/agents', label: 'Agents', icon: Bot },
   { href: '/feed', label: 'Live Feed', icon: Radio },
   { href: '/tasks', label: 'Taken', icon: ListTodo },
