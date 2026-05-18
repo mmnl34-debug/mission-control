@@ -43,3 +43,7 @@ invite-me.sh
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# omc runtime cache (machine-specific, per-session)
+.omc/state/hud-stdin-cache.json
+.omc/state/sessions/
