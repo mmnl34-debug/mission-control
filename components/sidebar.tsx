@@ -7,6 +7,7 @@ import {
   LayoutDashboard, Bot, Radio, ListTodo, FolderKanban,
   Euro, Activity, Zap, Menu, X, GitMerge, Search,
   StickyNote, CalendarDays, Calendar, Bell, Newspaper,
+  Layers, Timer, GitCommit,
 } from 'lucide-react'
 
 const nav = [
@@ -18,9 +19,12 @@ const nav = [
   { href: '/notes', label: 'Notities', icon: StickyNote },
   { href: '/planner', label: 'Planner', icon: CalendarDays },
   { href: '/agenda', label: 'Agenda', icon: Calendar },
+  { href: '/focus', label: 'Focus', icon: Timer },
   { href: '/alerts', label: 'Alerts', icon: Bell },
   { href: '/projects', label: 'Projecten', icon: FolderKanban },
+  { href: '/helix', label: 'Helix Pipeline', icon: Layers },
   { href: '/pipeline', label: 'Pipeline', icon: GitMerge },
+  { href: '/changelog', label: 'Changelog', icon: GitCommit },
   { href: '/costs', label: 'Kosten', icon: Euro },
   { href: '/search', label: 'Log Search', icon: Search },
 ]

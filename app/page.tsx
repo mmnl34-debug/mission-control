@@ -13,6 +13,7 @@ import { AgendaWidget } from '@/components/agenda-widget'
 import { AlertRulesWidget } from '@/components/alert-rules-widget'
 import { DashboardRealtime } from '@/components/dashboard-realtime'
 import { StreakWidget } from '@/components/streak-widget'
+import { ProductivityHeatmap } from '@/components/productivity-heatmap'
 import { ArrowUpRight, Bot, Radio, ListTodo, GitCommit, Euro, GitMerge } from 'lucide-react'
 import { fmtEur } from '@/lib/currency'
 import Link from 'next/link'
@@ -374,6 +375,9 @@ export default async function DashboardPage() {
           </div>
           <StreakWidget />
         </div>
+
+        {/* Produktiviteitsheatmap */}
+        <ProductivityHeatmap />
 
         {/* Bento grid row 3 — Pipeline (verborgen op mobiel) */}
         <div className="hud-card mc-hide-mobile">

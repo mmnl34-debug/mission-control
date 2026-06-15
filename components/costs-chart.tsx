@@ -5,13 +5,14 @@ import { toEur } from '@/lib/currency'
 
 type Props = {
   dailyData: { date: string; cost: number }[]
+  label?: string
 }
 
-export function CostsChart({ dailyData }: Props) {
+export function CostsChart({ dailyData, label = 'Dagelijkse kosten (14 dagen)' }: Props) {
   return (
     <div className="hud-card p-4">
       <div className="hud-corners-bottom" />
-      <h3 className="hud-label mb-4">Dagelijkse kosten (14 dagen)</h3>
+      <h3 className="hud-label mb-4">{label}</h3>
       <div style={{ height: 220 }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={dailyData} margin={{ top: 5, right: 5, bottom: 5, left: 0 }}>

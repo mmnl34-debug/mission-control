@@ -57,22 +57,38 @@ export default async function CostsPage() {
     byAgent[name].tokens += r.input_tokens + r.output_tokens
   }
 
-  // Daily data for bar chart (last 14 days)
-  const dailyMap: Record<string, number> = {}
+  // Daily data — 14 dagen voor bar chart
+  const dailyMap14: Record<string, number> = {}
   const now = new Date()
   for (let i = 13; i >= 0; i--) {
     const d = new Date(now)
     d.setDate(d.getDate() - i)
-    const key = d.toISOString().slice(0, 10)
-    dailyMap[key] = 0
+    dailyMap14[d.toISOString().slice(0, 10)] = 0
   }
   for (const r of records as { date: string; cost_usd: number }[]) {
-    if (r.date && dailyMap[r.date] !== undefined) {
-      dailyMap[r.date] += Number(r.cost_usd)
+    if (r.date && dailyMap14[r.date] !== undefined) {
+      dailyMap14[r.date] += Number(r.cost_usd)
     }
   }
-  const dailyData = Object.entries(dailyMap).map(([date, cost]) => ({
-    date: date.slice(5), // MM-DD
+  const dailyData = Object.entries(dailyMap14).map(([date, cost]) => ({
+    date: date.slice(5),
+    cost: Math.round(cost * 10000) / 10000,
+  }))
+
+  // Daily data — 90 dagen voor trend chart
+  const dailyMap90: Record<string, number> = {}
+  for (let i = 89; i >= 0; i--) {
+    const d = new Date(now)
+    d.setDate(d.getDate() - i)
+    dailyMap90[d.toISOString().slice(0, 10)] = 0
+  }
+  for (const r of records as { date: string; cost_usd: number }[]) {
+    if (r.date && dailyMap90[r.date] !== undefined) {
+      dailyMap90[r.date] += Number(r.cost_usd)
+    }
+  }
+  const dailyData90 = Object.entries(dailyMap90).map(([date, cost]) => ({
+    date: date.slice(5),
     cost: Math.round(cost * 10000) / 10000,
   }))
 
@@ -95,6 +111,9 @@ export default async function CostsPage() {
         <CostsChart dailyData={dailyData} />
         <ModelPie modelData={modelData} totalCost={totalCost} />
       </div>
+
+      {/* 90-daagse trend */}
+      <CostsChart dailyData={dailyData90} label="Kostentrend 90 dagen" />
 
       {/* Summary stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
