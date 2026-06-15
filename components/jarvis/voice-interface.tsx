@@ -4,9 +4,49 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 
 type JarvisState = 'idle' | 'listening' | 'processing' | 'speaking'
 
+const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const SB_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
 // Detecteer sluit-intentie lokaal (geen API call nodig)
 function isCloseCommand(t: string): boolean {
   return /\b(stop|sluit|afsluiten|tot ziens|doei|uitschakelen|sluiten)\b/.test(t.toLowerCase())
+}
+
+// Detecteer taak-aanmaak commando en extraheer titel
+function parseMakeTask(t: string): string | null {
+  const lower = t.toLowerCase()
+  const patterns = [
+    /(?:nieuwe taak|maak taak|taak aanmaken|voeg taak toe|taak toevoegen)[:\s]+(.+)/i,
+    /(?:maak een taak|zet een taak)[:\s]+(.+)/i,
+  ]
+  for (const p of patterns) {
+    const m = t.match(p)
+    if (m?.[1]?.trim()) return m[1].trim()
+  }
+  // Detect "taak: [titel]" shorthand
+  if (/^taak[:\s]/i.test(lower)) {
+    const rest = t.replace(/^taak[:\s]+/i, '').trim()
+    if (rest.length > 2) return rest
+  }
+  return null
+}
+
+async function createTask(title: string): Promise<boolean> {
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/tasks`, {
+      method: 'POST',
+      headers: {
+        apikey: SB_KEY,
+        Authorization: `Bearer ${SB_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify({ title, status: 'todo', priority: 3, project: 'JARVIS' }),
+    })
+    return r.ok || r.status === 201
+  } catch {
+    return false
+  }
 }
 
 async function askJarvis(transcript: string): Promise<string> {
@@ -79,6 +119,23 @@ export function JarvisVoiceInterface() {
         setExpanded(false)
         setTranscript('')
         setResponse('')
+      }
+      return
+    }
+
+    // Taak aanmaken via stem — direct naar Supabase, geen API call
+    const taskTitle = parseMakeTask(text)
+    if (taskTitle) {
+      const ok = await createTask(taskTitle)
+      const reply = ok
+        ? `Taak aangemaakt: ${taskTitle}`
+        : 'Sorry, kon de taak niet opslaan. Probeer het opnieuw.'
+      setResponse(reply)
+      setState('speaking')
+      isSpeakingRef.current = true
+      try { await speakText(reply) } catch { /* ignore */ } finally {
+        isSpeakingRef.current = false
+        setState('idle')
       }
       return
     }
@@ -329,7 +386,7 @@ export function JarvisVoiceInterface() {
           )}
 
           <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.12)', fontFamily: 'monospace', letterSpacing: '0.08em', marginTop: 8 }}>
-            VRAAG ALLES IN HET NEDERLANDS · ZEG "STOP" OM TE SLUITEN
+            ZEG "NIEUWE TAAK [NAAM]" OM EEN TAAK AAN TE MAKEN · "STOP" OM TE SLUITEN
           </div>
         </div>
       )}

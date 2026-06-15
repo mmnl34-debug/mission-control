@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Bot, Radio, ListTodo, FolderKanban,
   Euro, Activity, Zap, Menu, X, GitMerge, Search,
   StickyNote, CalendarDays, Calendar, Bell, Newspaper,
-  Layers, Timer, GitCommit, Target, BellRing,
+  Layers, Timer, GitCommit, Target, BellRing, Server, BookOpen,
 } from 'lucide-react'
 
 const nav = [
@@ -29,6 +29,8 @@ const nav = [
   { href: '/changelog', label: 'Changelog', icon: GitCommit },
   { href: '/costs', label: 'Kosten', icon: Euro },
   { href: '/search', label: 'Log Search', icon: Search },
+  { href: '/skills', label: 'Skills', icon: BookOpen },
+  { href: '/systeem', label: 'Systeem', icon: Server },
 ]
 
 function LiveClock() {

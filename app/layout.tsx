@@ -7,6 +7,7 @@ import { CommandPalette } from '@/components/command-palette'
 import { AgendaNotifications } from '@/components/agenda-notifications'
 import { KeyboardShortcuts } from '@/components/keyboard-shortcuts'
 import { QuickCapture } from '@/components/quick-capture'
+import { JarvisProactive } from '@/components/jarvis-proactive'
 
 const geist = Geist({ subsets: ['latin'] })
 
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="flex-1 overflow-auto" id="main-content">
           {children}
         </main>
+        <JarvisProactive />
         <AgendaNotifications />
         <JarvisVoiceInterface />
         <CommandPalette />
