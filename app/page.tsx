@@ -2,6 +2,8 @@ export const dynamic = 'force-dynamic'
 
 import { type AgentSession, type AgentLog, type CostRecord, type Project, type Task, type Note, type PlannerEvent, type AlertRule, type AgendaCategory, type Goal } from '@/lib/supabase'
 import { DoelenWidget } from '@/components/doelen-widget'
+import { HelixMetricsWidget } from '@/components/helix-metrics-widget'
+import { DashboardCustomizer } from '@/components/dashboard-customizer'
 import { LiveStats } from '@/components/realtime/live-stats'
 import { ServiceHealth } from '@/components/service-health'
 import { PipelineMini } from '@/components/pipeline-mini'
@@ -209,7 +211,7 @@ export default async function DashboardPage() {
         />
 
         {/* Weer + Nieuws rij */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <div id="ws-weather" className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           <WeatherWidget />
           <div className="lg:col-span-2">
             <NewsWidget />
@@ -217,7 +219,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Bento grid row 1 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <div id="ws-bento1" className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           {/* Agents card */}
           <div className="hud-card">
             <div className="hud-corners-bottom" />
@@ -320,7 +322,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Bento grid row 2 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <div id="ws-bento2" className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           {/* Tasks card — 2fr */}
           <div className="hud-card lg:col-span-2">
             <div className="hud-corners-bottom" />
@@ -397,17 +399,24 @@ export default async function DashboardPage() {
         </div>
 
         {/* Bento grid row 3 — Notities + Planner + Doelen */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <div id="ws-bento3" className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           <NotesWidget initialNotes={notes} />
           <AgendaWidget initialEvents={plannerEvents} initialCategories={agendaCategories} />
           <DoelenWidget initialGoals={goals as Goal[]} />
         </div>
 
+        {/* Helix Studio metrics */}
+        <div id="ws-helix" className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          <HelixMetricsWidget />
+        </div>
+
         {/* Alert rules */}
-        <AlertRulesWidget initialRules={alertRules} />
+        <div id="ws-alerts">
+          <AlertRulesWidget initialRules={alertRules} />
+        </div>
 
         {/* Weekoverzicht + Streak */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
+        <div id="ws-week" className="grid grid-cols-1 lg:grid-cols-4 gap-3">
           <div className="lg:col-span-3">
             <WeekOverview />
           </div>
@@ -415,16 +424,21 @@ export default async function DashboardPage() {
         </div>
 
         {/* Produktiviteitsheatmap */}
-        <ProductivityHeatmap />
+        <div id="ws-heatmap">
+          <ProductivityHeatmap />
+        </div>
 
-        {/* Bento grid row 3 — Pipeline (verborgen op mobiel) */}
-        <div className="hud-card mc-hide-mobile">
+        {/* Pipeline (verborgen op mobiel) */}
+        <div id="ws-pipeline" className="hud-card mc-hide-mobile">
           <div className="hud-corners-bottom" />
           <BentoHeader title="Pipeline" href="/pipeline" badge={`${activeSessions.length} actief`} />
           <div className="p-3">
             <PipelineMini />
           </div>
         </div>
+
+        {/* Dashboard customizer */}
+        <DashboardCustomizer />
 
         {/* Mobile-only snelle links naar pipeline + git */}
         <div className="flex gap-2 lg:hidden">
