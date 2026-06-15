@@ -113,3 +113,15 @@ export type AgendaCategory = {
   is_default: boolean
   created_at: string
 }
+
+export type Goal = {
+  id: string
+  title: string
+  description: string | null
+  project: string | null
+  status: 'active' | 'completed' | 'paused'
+  progress: number
+  target_date: string | null
+  created_at: string
+  updated_at: string
+}

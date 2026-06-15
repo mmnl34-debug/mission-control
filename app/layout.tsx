@@ -13,6 +13,16 @@ const geist = Geist({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Mission Control',
   description: 'AI agent monitoring dashboard',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Mission Control',
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
+    'msapplication-TileColor': '#07070f',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

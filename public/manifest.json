@@ -1,0 +1,30 @@
+{
+  "name": "Mission Control",
+  "short_name": "MC",
+  "description": "AI Agent Monitoring Dashboard",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07070f",
+  "theme_color": "#07070f",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    { "name": "Taken",   "url": "/tasks",   "description": "Kanban bord" },
+    { "name": "Focus",   "url": "/focus",   "description": "Pomodoro timer" },
+    { "name": "Agenda",  "url": "/agenda",  "description": "Afspraken" }
+  ],
+  "categories": ["productivity", "utilities"]
+}

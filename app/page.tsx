@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
-import { type AgentSession, type AgentLog, type CostRecord, type Project, type Task, type Note, type PlannerEvent, type AlertRule, type AgendaCategory } from '@/lib/supabase'
+import { type AgentSession, type AgentLog, type CostRecord, type Project, type Task, type Note, type PlannerEvent, type AlertRule, type AgendaCategory, type Goal } from '@/lib/supabase'
+import { DoelenWidget } from '@/components/doelen-widget'
 import { LiveStats } from '@/components/realtime/live-stats'
 import { ServiceHealth } from '@/components/service-health'
 import { PipelineMini } from '@/components/pipeline-mini'
@@ -14,7 +15,7 @@ import { AlertRulesWidget } from '@/components/alert-rules-widget'
 import { DashboardRealtime } from '@/components/dashboard-realtime'
 import { StreakWidget } from '@/components/streak-widget'
 import { ProductivityHeatmap } from '@/components/productivity-heatmap'
-import { ArrowUpRight, Bot, Radio, ListTodo, GitCommit, Euro, GitMerge } from 'lucide-react'
+import { ArrowUpRight, Bot, Radio, ListTodo, GitCommit, Euro, GitMerge, GitPullRequest } from 'lucide-react'
 import { fmtEur } from '@/lib/currency'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
@@ -35,14 +36,36 @@ type GitCommitData = {
   commit: { message: string; author: { date: string } }
 }
 
+type GitPR = {
+  number: number
+  title: string
+  state: string
+  html_url: string
+  created_at: string
+  user: { login: string }
+  draft: boolean
+}
+
+const GH_HEADERS = { 'User-Agent': 'mission-control-dashboard' }
+
 async function fetchGitCommits(): Promise<GitCommitData[]> {
   try {
     const res = await fetch(
       'https://api.github.com/repos/mmnl34-debug/mission-control/commits?per_page=5',
-      {
-        headers: { 'User-Agent': 'mission-control-dashboard' },
-        cache: 'no-store',
-      }
+      { headers: GH_HEADERS, cache: 'no-store' }
+    )
+    if (!res.ok) return []
+    return res.json()
+  } catch {
+    return []
+  }
+}
+
+async function fetchOpenPRs(): Promise<GitPR[]> {
+  try {
+    const res = await fetch(
+      'https://api.github.com/repos/mmnl34-debug/mission-control/pulls?state=open&per_page=5',
+      { headers: GH_HEADERS, cache: 'no-store' }
     )
     if (!res.ok) return []
     return res.json()
@@ -52,7 +75,7 @@ async function fetchGitCommits(): Promise<GitCommitData[]> {
 }
 
 async function getDashboardData() {
-  const [sessions, logs, costs, projects, tasks, notes, plannerEvents, alertRules, agendaCategories, commits] = await Promise.all([
+  const [sessions, logs, costs, projects, tasks, notes, plannerEvents, alertRules, agendaCategories, commits, prs, goals] = await Promise.all([
     sbFetch('agent_sessions?select=*&order=last_seen_at.desc'),
     sbFetch('agent_logs?select=*&order=created_at.desc&limit=15'),
     sbFetch('cost_tracking?select=*'),
@@ -63,6 +86,8 @@ async function getDashboardData() {
     sbFetch('alert_rules?select=*&order=name.asc'),
     sbFetch('agenda_categories?select=*&order=name.asc'),
     fetchGitCommits(),
+    fetchOpenPRs(),
+    sbFetch('goals?select=*&status=eq.active&order=created_at.asc&limit=3'),
   ])
   return {
     sessions: (sessions as AgentSession[]) ?? [],
@@ -75,6 +100,8 @@ async function getDashboardData() {
     alertRules: (alertRules as AlertRule[]) ?? [],
     agendaCategories: (agendaCategories as AgendaCategory[]) ?? [],
     commits: (commits as GitCommitData[]) ?? [],
+    prs: (prs as GitPR[]) ?? [],
+    goals: goals ?? [],
   }
 }
 
@@ -107,7 +134,7 @@ function BentoHeader({ title, href, badge }: { title: string; href: string; badg
 }
 
 export default async function DashboardPage() {
-  const { sessions, logs, costs, projects, tasks, notes, plannerEvents, alertRules, agendaCategories, commits } = await getDashboardData()
+  const { sessions, logs, costs, projects, tasks, notes, plannerEvents, alertRules, agendaCategories, commits, prs, goals } = await getDashboardData()
 
   const activeSessions = sessions.filter(s => s.status === 'active')
   const todayStr = new Date().toISOString().slice(0, 10)
@@ -250,32 +277,42 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          {/* Git activity card — verborgen op mobiel */}
+          {/* Git activity + PR card — verborgen op mobiel */}
           <div className="hud-card mc-hide-mobile">
             <div className="hud-corners-bottom" />
-            <BentoHeader title="Git Activity" href="https://github.com/mmnl34-debug/mission-control" badge={`${commits.length} commits`} />
-            <div className="p-3 space-y-2.5">
-              {commits.length > 0 ? commits.slice(0, 4).map(commit => (
+            <BentoHeader title="Git Activity" href="https://github.com/mmnl34-debug/mission-control" badge={`${commits.length} commits · ${prs.length} PR`} />
+            <div className="p-3 space-y-2">
+              {/* Open PRs */}
+              {prs.length > 0 && prs.slice(0, 2).map(pr => (
+                <div key={pr.number} className="flex items-start gap-2 p-1.5 rounded" style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.12)' }}>
+                  <GitPullRequest size={11} className="shrink-0 mt-0.5" style={{ color: '#10b981' }} />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-terminal text-xs truncate" style={{ color: '#cbd5e1' }}>{pr.title.slice(0, 55)}</p>
+                    <span className="font-terminal" style={{ color: '#334155', fontSize: '9px' }}>#{pr.number} {pr.draft ? '· draft' : '· open'}</span>
+                  </div>
+                </div>
+              ))}
+              {/* Commits */}
+              {commits.slice(0, prs.length > 0 ? 2 : 4).map(commit => (
                 <div key={commit.sha} className="flex items-start gap-2">
                   <GitCommit size={12} className="shrink-0 mt-0.5" style={{ color: '#00d4ff' }} />
                   <div className="min-w-0 flex-1">
                     <p className="font-terminal text-xs truncate" style={{ color: '#cbd5e1' }}>
-                      {commit.commit.message.split('\n')[0].slice(0, 60)}
+                      {commit.commit.message.split('\n')[0].slice(0, 55)}
                     </p>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="font-terminal" style={{ color: '#4f52a0', fontSize: '10px' }}>
-                        {commit.sha.slice(0, 7)}
-                      </span>
+                      <span className="font-terminal" style={{ color: '#4f52a0', fontSize: '10px' }}>{commit.sha.slice(0, 7)}</span>
                       <span className="font-terminal" style={{ color: '#334155', fontSize: '10px' }}>
                         {formatDistanceToNow(new Date(commit.commit.author.date), { locale: nl, addSuffix: true })}
                       </span>
                     </div>
                   </div>
                 </div>
-              )) : (
+              ))}
+              {commits.length === 0 && prs.length === 0 && (
                 <div className="flex items-center justify-center py-4">
                   <GitCommit size={14} style={{ color: '#334155' }} />
-                  <span className="font-terminal text-xs ml-2" style={{ color: '#334155' }}>Geen commits beschikbaar</span>
+                  <span className="font-terminal text-xs ml-2" style={{ color: '#334155' }}>Geen activiteit</span>
                 </div>
               )}
             </div>
@@ -359,10 +396,11 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Bento grid row 3 — Notities + Planner */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        {/* Bento grid row 3 — Notities + Planner + Doelen */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           <NotesWidget initialNotes={notes} />
           <AgendaWidget initialEvents={plannerEvents} initialCategories={agendaCategories} />
+          <DoelenWidget initialGoals={goals as Goal[]} />
         </div>
 
         {/* Alert rules */}

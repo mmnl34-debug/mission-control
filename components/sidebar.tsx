@@ -7,15 +7,17 @@ import {
   LayoutDashboard, Bot, Radio, ListTodo, FolderKanban,
   Euro, Activity, Zap, Menu, X, GitMerge, Search,
   StickyNote, CalendarDays, Calendar, Bell, Newspaper,
-  Layers, Timer, GitCommit,
+  Layers, Timer, GitCommit, Target, BellRing,
 } from 'lucide-react'
 
 const nav = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/briefing', label: 'Briefing', icon: Newspaper },
+  { href: '/notificaties', label: 'Notificaties', icon: BellRing },
   { href: '/agents', label: 'Agents', icon: Bot },
   { href: '/feed', label: 'Live Feed', icon: Radio },
   { href: '/tasks', label: 'Taken', icon: ListTodo },
+  { href: '/doelen', label: 'Doelen', icon: Target },
   { href: '/notes', label: 'Notities', icon: StickyNote },
   { href: '/planner', label: 'Planner', icon: CalendarDays },
   { href: '/agenda', label: 'Agenda', icon: Calendar },
