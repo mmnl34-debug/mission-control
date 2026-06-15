@@ -5,6 +5,8 @@ import { Sidebar } from '@/components/sidebar'
 import { JarvisVoiceInterface } from '@/components/jarvis/voice-interface'
 import { CommandPalette } from '@/components/command-palette'
 import { AgendaNotifications } from '@/components/agenda-notifications'
+import { KeyboardShortcuts } from '@/components/keyboard-shortcuts'
+import { QuickCapture } from '@/components/quick-capture'
 
 const geist = Geist({ subsets: ['latin'] })
 
@@ -24,6 +26,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AgendaNotifications />
         <JarvisVoiceInterface />
         <CommandPalette />
+        <KeyboardShortcuts />
+        <QuickCapture />
       </body>
     </html>
   )

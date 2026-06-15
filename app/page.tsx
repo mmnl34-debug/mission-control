@@ -12,6 +12,7 @@ import { NotesWidget } from '@/components/notes-widget'
 import { AgendaWidget } from '@/components/agenda-widget'
 import { AlertRulesWidget } from '@/components/alert-rules-widget'
 import { DashboardRealtime } from '@/components/dashboard-realtime'
+import { StreakWidget } from '@/components/streak-widget'
 import { ArrowUpRight, Bot, Radio, ListTodo, GitCommit, Euro, GitMerge } from 'lucide-react'
 import { fmtEur } from '@/lib/currency'
 import Link from 'next/link'
@@ -109,6 +110,10 @@ export default async function DashboardPage() {
 
   const activeSessions = sessions.filter(s => s.status === 'active')
   const todayStr = new Date().toISOString().slice(0, 10)
+
+  // Tijdsgebonden begroeting (NL zomertijd UTC+2)
+  const nlHour = (new Date().getUTCHours() + 2) % 24
+  const greeting = nlHour < 12 ? 'Goedemorgen' : nlHour < 18 ? 'Goedemiddag' : 'Goedenavond'
   const todayCosts = costs.filter(c => c.date === todayStr)
   const todayTotal = todayCosts.reduce((s, c) => s + Number(c.cost_usd), 0)
 
@@ -134,7 +139,7 @@ export default async function DashboardPage() {
         {/* Header — verborgen op mobiel (topbar doet dit al) */}
         <div className="hidden lg:flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-3 mb-1">
+            <div className="flex items-center gap-3 mb-0.5">
               <h1
                 className="text-lg font-bold tracking-widest uppercase font-terminal glow-text"
                 style={{ color: '#f1f5f9', letterSpacing: '0.2em' }}
@@ -144,6 +149,9 @@ export default async function DashboardPage() {
             </div>
             <p className="font-terminal text-xs tracking-wider" style={{ color: '#334155' }}>
               AI Agent Monitoring Dashboard
+            </p>
+            <p className="font-terminal text-xs mt-1" style={{ color: '#64748b' }}>
+              {greeting}, Gertjan
             </p>
           </div>
 
@@ -359,8 +367,13 @@ export default async function DashboardPage() {
         {/* Alert rules */}
         <AlertRulesWidget initialRules={alertRules} />
 
-        {/* Weekoverzicht */}
-        <WeekOverview />
+        {/* Weekoverzicht + Streak */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
+          <div className="lg:col-span-3">
+            <WeekOverview />
+          </div>
+          <StreakWidget />
+        </div>
 
         {/* Bento grid row 3 — Pipeline (verborgen op mobiel) */}
         <div className="hud-card mc-hide-mobile">

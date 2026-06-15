@@ -1,8 +1,8 @@
-import { fetchWeather, weatherEmoji } from '@/lib/weather'
+import { fetchWeather, fetchForecast, weatherEmoji } from '@/lib/weather'
 import { MapPin, Droplets, Wind, Thermometer } from 'lucide-react'
 
 export async function WeatherWidget() {
-  const w = await fetchWeather('Eindhoven')
+  const [w, forecast] = await Promise.all([fetchWeather('Eindhoven'), fetchForecast('Eindhoven')])
 
   if (!w) {
     return (
@@ -56,9 +56,7 @@ export async function WeatherWidget() {
       </div>
 
       {/* Stats row */}
-      <div
-        className="grid grid-cols-3 px-3 pb-3 gap-2"
-      >
+      <div className="grid grid-cols-3 px-3 gap-2">
         <div
           className="flex flex-col items-center gap-1 py-2 rounded-lg"
           style={{ background: 'rgba(0,212,255,0.04)', border: '1px solid rgba(0,212,255,0.08)' }}
@@ -84,6 +82,28 @@ export async function WeatherWidget() {
           <span className="font-terminal" style={{ fontSize: 9, color: '#334155' }}>Luchtvochtig.</span>
         </div>
       </div>
+
+      {/* 3-daagse forecast */}
+      {forecast.length > 0 && (
+        <div
+          className="grid grid-cols-3 px-3 pb-3 gap-2 mt-2"
+          style={{ borderTop: '1px solid rgba(0,212,255,0.06)', paddingTop: '10px' }}
+        >
+          {forecast.map(day => (
+            <div
+              key={day.label}
+              className="flex flex-col items-center gap-0.5 py-2 rounded-lg"
+              style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(0,212,255,0.06)' }}
+            >
+              <span className="font-terminal uppercase" style={{ fontSize: 9, color: '#475569', letterSpacing: '0.1em' }}>{day.label}</span>
+              <span style={{ fontSize: 16, lineHeight: 1.4 }}>{day.emoji}</span>
+              <span className="font-terminal" style={{ fontSize: 10, color: '#f1f5f9' }}>
+                {day.max}°<span style={{ color: '#334155' }}>/{day.min}°</span>
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
