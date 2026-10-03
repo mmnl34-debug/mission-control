@@ -49,6 +49,7 @@ export function DoelenWidget({ initialGoals }: { initialGoals: Goal[] }) {
           goals.slice(0, 3).map(goal => {
             const color = statusColor(goal.status)
             const daysLeft = goal.target_date
+              // eslint-disable-next-line react-hooks/purity -- relatieve datum, mag per render verschillen
               ? Math.ceil((new Date(goal.target_date).getTime() - Date.now()) / 86400000)
               : null
             return (

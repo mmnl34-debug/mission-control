@@ -16,9 +16,27 @@ async function sb(path: string) {
   return r.json()
 }
 
+function Section({ icon: Icon, label, color, count, children }: {
+  icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>
+  label: string; color: string; count: number; children: React.ReactNode
+}) {
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <Icon size={13} style={{ color }} />
+        <h2 className="font-terminal text-xs uppercase tracking-widest" style={{ color }}>{label}</h2>
+        <span className="font-terminal text-xs px-1.5 py-0.5 rounded" style={{ background: `${color}15`, color, fontSize: 9 }}>{count}</span>
+      </div>
+      <div className="space-y-2">{children}</div>
+    </div>
+  )
+}
+
 export default async function NotificatiesPage() {
-  const today = new Date().toISOString().slice(0, 10)
-  const in7   = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10)
+  // eslint-disable-next-line react-hooks/purity -- async server component, runs once per request
+  const now = Date.now()
+  const today = new Date(now).toISOString().slice(0, 10)
+  const in7   = new Date(now + 7 * 86400000).toISOString().slice(0, 10)
 
   const [notes, tasks, events, alerts] = await Promise.all([
     sb('notes?processed=eq.false&select=*&order=created_at.desc'),
@@ -29,29 +47,7 @@ export default async function NotificatiesPage() {
 
   const total = notes.length + tasks.length + events.length + alerts.length
 
-  type Item =
-    | { kind: 'note';  data: Note }
-    | { kind: 'task';  data: Task }
-    | { kind: 'event'; data: PlannerEvent }
-    | { kind: 'alert'; data: AlertRule }
-
   const PRIO_COLOR: Record<number, string> = { 1: '#ef4444', 2: '#f59e0b', 3: '#10b981' }
-
-  function Section({ icon: Icon, label, color, count, children }: {
-    icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>
-    label: string; color: string; count: number; children: React.ReactNode
-  }) {
-    return (
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <Icon size={13} style={{ color }} />
-          <h2 className="font-terminal text-xs uppercase tracking-widest" style={{ color }}>{label}</h2>
-          <span className="font-terminal text-xs px-1.5 py-0.5 rounded" style={{ background: `${color}15`, color, fontSize: 9 }}>{count}</span>
-        </div>
-        <div className="space-y-2">{children}</div>
-      </div>
-    )
-  }
 
   return (
     <div className="p-4 lg:p-6 space-y-6">

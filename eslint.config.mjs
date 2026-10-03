@@ -12,6 +12,14 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Third-party / niet-projectcode
+    "trail-of-bits-security/**",
+    ".agents/**",
+    ".claude/**",
+    ".gstack/**",
+    "algorithmic-art/**",
+    "entrepreneur-skills/**",
+    "seo-machine/**",
   ]),
 ]);
 

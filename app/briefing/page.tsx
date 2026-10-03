@@ -15,6 +15,7 @@ async function sbFetch(path: string) {
 
 export default async function BriefingRoute() {
   const today = new Date().toISOString().slice(0, 10)
+  // eslint-disable-next-line react-hooks/purity -- async server component, runs once per request
   const in7days = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
 
   const [tasks, notes, events, categories, sessions, costs] = await Promise.all([

@@ -31,6 +31,7 @@ export async function HelixMetricsWidget() {
   const convRate  = total > 0 ? Math.round((klanten / total) * 100) : 0
 
   // Last 30 days
+  // eslint-disable-next-line react-hooks/purity -- relatieve datum, mag per render verschillen
   const since30 = new Date(Date.now() - 30 * 86400000).toISOString()
   const recent30 = contacts.filter(c => c.created_at >= since30).length
 

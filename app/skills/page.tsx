@@ -222,7 +222,7 @@ export default function SkillsPage() {
       {filtered.length === 0 ? (
         <div className="hud-card p-10 text-center">
           <Search size={24} className="mx-auto mb-3" style={{ color: '#1e293b' }} />
-          <p className="font-terminal text-sm" style={{ color: '#334155' }}>Geen skills gevonden voor "{query}"</p>
+          <p className="font-terminal text-sm" style={{ color: '#334155' }}>Geen skills gevonden voor &quot;{query}&quot;</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">

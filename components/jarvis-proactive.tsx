@@ -17,7 +17,6 @@ export function JarvisProactive() {
   const check = useCallback(async () => {
     try {
       const today = new Date().toISOString().slice(0, 10)
-      const todayEnd = `${today}T23:59:59.999Z`
 
       const [critTasks, overdueEvents] = await Promise.all([
         fetch(`${SB_URL}/rest/v1/tasks?status=eq.todo&priority=eq.1&select=id,title&limit=10`, { headers: H })

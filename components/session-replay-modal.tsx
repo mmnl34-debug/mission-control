@@ -210,6 +210,7 @@ export function SessionReplayModal({ sessionId, agentName, onClose, sessionMeta 
 
   // Load logs
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- laadstatus bij nieuwe sessie
     setLoading(true)
     fetch(`/api/session-logs?session_id=${encodeURIComponent(sessionId)}`)
       .then(r => r.ok ? r.json() : [])

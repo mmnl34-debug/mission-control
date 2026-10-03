@@ -15,6 +15,7 @@ export function BudgetTracker({ todayTotal }: Props) {
 
   useEffect(() => {
     const stored = localStorage.getItem('mc-daily-budget-eur')
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage pas na mount beschikbaar
     if (stored) setBudget(parseFloat(stored))
   }, [])
 

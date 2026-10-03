@@ -50,6 +50,7 @@ export function DashboardCustomizer() {
 
   useEffect(() => {
     const saved = loadPrefs()
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage pas na mount beschikbaar
     setPrefs(saved)
     applyAll(saved)
     setMounted(true)

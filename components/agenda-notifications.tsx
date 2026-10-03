@@ -78,6 +78,7 @@ export function AgendaNotifications() {
 
   useEffect(() => {
     if (typeof window === 'undefined' || !('Notification' in window)) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- browser-API pas na mount beschikbaar
     setPermission(Notification.permission)
   }, [])
 

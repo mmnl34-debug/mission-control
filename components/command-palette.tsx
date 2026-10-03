@@ -88,7 +88,7 @@ export function CommandPalette() {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); open ? handleClose() : handleOpen() }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); if (open) handleClose(); else handleOpen() }
       if (e.key === 'Escape' && open) handleClose()
     }
     window.addEventListener('keydown', handler)
@@ -109,6 +109,7 @@ export function CommandPalette() {
     else if (e.key === 'Enter') { e.preventDefault(); if (filtered[activeIndex]) runCommand(filtered[activeIndex]) }
   }
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- selectie resetten bij nieuwe zoekterm
   useEffect(() => { setActiveIndex(0) }, [query])
 
   if (!open) return null

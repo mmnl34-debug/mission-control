@@ -162,6 +162,7 @@ export function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const pathname = usePathname()
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- menu sluiten bij routewijziging
   useEffect(() => { setMobileOpen(false) }, [pathname])
 
   return (

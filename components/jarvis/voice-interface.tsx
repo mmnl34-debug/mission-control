@@ -357,7 +357,7 @@ export function JarvisVoiceInterface() {
                 ◂ INPUT ONTVANGEN
               </div>
               <div style={{ fontSize: 12, color: '#c8d8e8', fontStyle: 'italic', lineHeight: 1.5, paddingLeft: 8, borderLeft: `2px solid ${color}40` }}>
-                "{transcript}"
+                &quot;{transcript}&quot;
               </div>
             </div>
           )}
@@ -386,7 +386,7 @@ export function JarvisVoiceInterface() {
           )}
 
           <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.12)', fontFamily: 'monospace', letterSpacing: '0.08em', marginTop: 8 }}>
-            ZEG "NIEUWE TAAK [NAAM]" OM EEN TAAK AAN TE MAKEN · "STOP" OM TE SLUITEN
+            ZEG &quot;NIEUWE TAAK [NAAM]&quot; OM EEN TAAK AAN TE MAKEN · &quot;STOP&quot; OM TE SLUITEN
           </div>
         </div>
       )}

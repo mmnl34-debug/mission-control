@@ -43,6 +43,7 @@ export default function DoelenPage() {
     setGoals(data)
   }, [])
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- initiële data laden
   useEffect(() => { load() }, [load])
 
   const addGoal = async () => {
@@ -200,6 +201,7 @@ export default function DoelenPage() {
         {filtered.map(goal => {
           const color = STATUS_COLOR[goal.status]
           const daysLeft = goal.target_date
+            // eslint-disable-next-line react-hooks/purity -- relatieve datum, mag per render verschillen
             ? Math.ceil((new Date(goal.target_date).getTime() - Date.now()) / 86400000)
             : null
           const isEditing = editId === goal.id
